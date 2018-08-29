@@ -1,7 +1,7 @@
 # Личный проект «Кэндишоп» [![Build status][travis-image]][travis-url]
 
 * Студент: [Дарья Зайцева](https://up.htmlacademy.ru/javascript/15/user/644345).
-* Наставник: `Неизвестно`.
+* Наставник: [Александр Смирнов](https://htmlacademy.ru/profile/id516117).
 
 ---
 
