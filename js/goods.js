@@ -32,7 +32,8 @@ var getRandomPicture = function (folderPath) {
 var getContent = function (contentArray, amount) {
   var contents = contentArray[getRandomInd(contentArray)];
   for (var i = 1; i < amount; i++) {
-    // if (contents.includes(contentArray[getRandomInd(contentArray)])) {   надо обсудить это
+    // TODO: обсудить возможность исключения повторов
+    // if (contents.includes(contentArray[getRandomInd(contentArray)])) {
     //   continue;
     // }
     contents += ', ' + contentArray[getRandomInd(contentArray)];
@@ -82,8 +83,9 @@ var addCardElems = function () {
     cardElem.querySelector('.star__count').textContent = good.rating.number;
     cardElem.querySelector('.card__composition-list').textContent = good.nutritionFacts.contents;
     cardElem.querySelector('.card__price').innerHTML = good.price + ' <span class="card__currency">₽</span><span class="card__weight">/ ' + good.weight + ' Г</span>';
+    // TODO: обсудить это
     // cardElem.querySelector('.card__price').insertAdjacentHTML('afterBegin', good.price);
-    // cardElem.querySelector('.card__weight').textContent = '/ ' + good.weight + ' Г';  обсудить
+    // cardElem.querySelector('.card__weight').textContent = '/ ' + good.weight + ' Г';
     cardElem.querySelector('.card__img').src = good.picture;
     cardElem.querySelector('.card__img').alt = good.name;
 
