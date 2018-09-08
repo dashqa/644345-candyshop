@@ -66,58 +66,93 @@ var createGoods = function (amount) {
   return goods;
 };
 
+var cardElemTemplate = document.querySelector('#card').content.querySelector('.catalog__card');
 var catalogCardsElem = document.querySelector('.catalog__cards');
 
 if (catalogCardsElem.classList.contains('catalog__cards--load')) {
   catalogCardsElem.classList.remove('catalog__cards--load');
   catalogCardsElem.children[0].classList.add('visually-hidden');
 }
-
-var cardElemTemplate = document.querySelector('#card').content.querySelector('.catalog__card');
-var cardElemWrapper = document.querySelector('.catalog__cards-wrap');
-
 var renderCard = function (good) {
   var cardElem = cardElemTemplate.cloneNode(true);
-  cardElem.querySelector('card__title').textContent = good.name;
-  cardElem.querySelector('star__count').textContent = good.rating.number;
-  cardElem.querySelector('card__composition-list').textContent = good.nutritionFacts.contents;
-  cardElem.querySelector('card__price').insertAdjacentText('afterBegin', good.price);
-  cardElem.querySelector('card__weight').textContent = good.weight + ' Г';
+  cardElem.querySelector('.card__title').textContent = good.name;
+  cardElem.querySelector('.star__count').textContent = good.rating.number;
+  cardElem.querySelector('.card__composition-list').textContent = good.nutritionFacts.contents;
+  cardElem.querySelector('.card__price').innerHTML = good.price + ' <span class="card__currency">₽</span><span class="card__weight">/ ' + good.weight + ' Г</span>';
+  // cardElem.querySelector('.card__price').insertAdjacentHTML('afterBegin', good.price);
+  // cardElem.querySelector('.card__weight').textContent = '/ ' + good.weight + ' Г';  обсудить
+  cardElem.querySelector('.card__img').src = good.picture;
+  cardElem.querySelector('.card__img').alt = good.name;
 
-
-  if (good.amount > 5) {
-    cardElem.classList.add('card--in-stock');
-  } else if (good.amount > 1 && good.amount <= 5) {
-    cardElem.classList.add('card--little');
-  } else if (good.amount < 1) {
-    cardElem.classList.add('card--soon');
-  }
-
-  var energyCal = good.nutritionFacts.energy + ' ккал';
-  if (good.nutritionFacts.sugar) {
-    cardElem.querySelector('card__characteristic').textContent = 'Содержит сахар. ' + energyCal;
+  cardElem.classList.remove('card--in-stock');
+  if (good.amount <= 5) {
+    if (good.amount > 1 && good.amount <= 5) {
+      cardElem.classList.add('card--little');
+    } else if (good.amount < 1) {
+      cardElem.classList.add('card--soon');
+    }
   } else {
-    cardElem.querySelector('card__characteristic').textContent = 'Без сахара. ' + energyCal;
+    cardElem.classList.add('card--in-stock');
   }
 
+  var energyCalElem = good.nutritionFacts.energy + ' ккал';
+  cardElem.querySelector('.card__characteristic').textContent = !good.nutritionFacts.sugar ? 'Без сахара. ' + energyCalElem : 'Содержит сахар. ' + energyCalElem;
 
-  if (good.rating.value === 1) {
-    cardElem.querySelector('stars__rating').classList.add('stars__rating--one');
-  } else if (good.rating.value === 2) {
-    cardElem.querySelector('stars__rating').classList.add('stars__rating--two');
-  } else if (good.rating.value === 3) {
-    cardElem.querySelector('stars__rating').classList.add('stars__rating--three');
-  } else if (good.rating.value === 4) {
-    cardElem.querySelector('stars__rating').classList.add('stars__rating--four');
-  } else if (good.rating.value === 5) {
-    cardElem.querySelector('stars__rating').classList.add('stars__rating--five');
+  cardElem.querySelector('.stars__rating').classList.remove('stars__rating--five');
+  var ratingElem = 'Рейтинг: ' + good.rating.value + ' звезд';
+  switch (good.rating.value) {
+    case 1:
+      cardElem.querySelector('.stars__rating').classList.add('stars__rating--one');
+      cardElem.querySelector('.stars__rating').textContent = ratingElem + 'а';
+      break;
+    case 2:
+      cardElem.querySelector('.stars__rating').classList.add('stars__rating--two');
+      cardElem.querySelector('.stars__rating').textContent = ratingElem + 'ы';
+      break;
+    case 3:
+      cardElem.querySelector('.stars__rating').classList.add('stars__rating--three');
+      cardElem.querySelector('.stars__rating').textContent = ratingElem + 'ы';
+      break;
+    case 4:
+      cardElem.querySelector('.stars__rating').classList.add('stars__rating--four');
+      cardElem.querySelector('.stars__rating').textContent = ratingElem + 'ы';
+      break;
+
+    default:
+      cardElem.querySelector('.stars__rating').classList.add('stars__rating--five');
+      cardElem.querySelector('.stars__rating').textContent = ratingElem;
   }
 
   return cardElem;
 };
 
-var fragment = document.createDocumentFragment();
+var cardFragment = document.createDocumentFragment();
 for (var i = 0; i < createGoods(GOODS_AMOUNT).length; i++) {
-  fragment.appendChild(renderCard(createGoods(GOODS_AMOUNT)[i]));
+  cardFragment.appendChild(renderCard(createGoods(GOODS_AMOUNT)[i]));
 }
-cardElemWrapper.appendChild(fragment);
+catalogCardsElem.appendChild(cardFragment);
+
+
+var cardOrderElemTemplate = document.querySelector('#card-order').content.querySelector('.goods_card');
+var cardOrderElem = document.querySelector('.goods_cards');
+
+if (cardOrderElem.classList.contains('goods__cards--empty')) {
+  cardOrderElem.classList.remove('goods__cards--empty');
+  cardOrderElem.children[0].classList.add('visually-hidden');
+}
+
+var renderCardOrder = function (good) {
+  var orderElem = cardOrderElemTemplate.cloneNode(true);
+  orderElem.querySelector('.card-order__title').textContent = good.name;
+  orderElem.querySelector('.card-order__img').src = good.picture;
+  orderElem.querySelector('.card-order__img').alt = good.name;
+  orderElem.querySelector('.card-order__price').textContent = good.price + ' ₽';
+
+  return orderElem;
+};
+
+var cardOrderFragment = document.createDocumentFragment();
+for (var j = 0; j < createGoods(GOODS_AMOUNT).length; j++) {
+  cardOrderFragment.appendChild(renderCardOrder(createGoods(GOODS_AMOUNT)[j]));
+}
+cardOrderElem.appendChild(cardOrderFragment);
