@@ -73,6 +73,7 @@ if (catalogCardsElem.classList.contains('catalog__cards--load')) {
   catalogCardsElem.classList.remove('catalog__cards--load');
   catalogCardsElem.children[0].classList.add('visually-hidden');
 }
+
 var renderCard = function (good) {
   var cardElem = cardElemTemplate.cloneNode(true);
   cardElem.querySelector('.card__title').textContent = good.name;
@@ -84,9 +85,9 @@ var renderCard = function (good) {
   cardElem.querySelector('.card__img').src = good.picture;
   cardElem.querySelector('.card__img').alt = good.name;
 
-  cardElem.classList.remove('card--in-stock');
   if (good.amount <= 5) {
-    if (good.amount > 1 && good.amount <= 5) {
+    cardElem.classList.remove('card--in-stock');
+    if (good.amount > 1) {
       cardElem.classList.add('card--little');
     } else if (good.amount < 1) {
       cardElem.classList.add('card--soon');
