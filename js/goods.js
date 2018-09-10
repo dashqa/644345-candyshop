@@ -3,7 +3,6 @@
 var GOOD_NAMES = ['Чесночные сливки', 'Огуречный педант', 'Молочная хрюша', 'Грибной шейк', 'Баклажановое безумие', 'Паприколу итальяно', 'Нинзя-удар васаби', 'Хитрый баклажан', 'Горчичный вызов', 'Кедровая липучка', 'Корманный портвейн', 'Чилийский задира', 'Беконовый взрыв', 'Арахис vs виноград', 'Сельдерейная душа', 'Початок в бутылке', 'Чернющий мистер чеснок', 'Раша федераша', 'Кислая мина', 'Кукурузное утро', 'Икорный фуршет', 'Новогоднее настроение', 'С пивком потянет', 'Мисс креветка', 'Бесконечный взрыв', 'Невинные винные', 'Бельгийское пенное', 'Острый язычок'];
 var GOOD_PICTURES = ['gum-cedar.jpg', 'gum-chile.jpg', 'gum-eggplant.jpg', 'gum-mustard.jpg', 'gum-portwine.jpg', 'gum-wasabi.jpg', 'ice-cucumber.jpg', 'ice-eggplant.jpg', 'ice-garlic.jpg', 'ice-italian.jpg', 'ice-mushroom.jpg', 'ice-pig.jpg', 'marmalade-beer.jpg', 'marmalade-caviar.jpg', 'marmalade-corn.jpg', 'marmalade-new-year.jpg', 'marmalade-sour.jpg', 'marshmallow-bacon.jpg', 'marshmallow-beer.jpg', 'marshmallow-shrimp.jpg', 'marshmallow-spicy.jpg', 'marshmallow-wine.jpg', 'soda-bacon.jpg', 'soda-celery.jpg', 'soda-cob.jpg', 'soda-garlic.jpg', 'soda-peanut-grapes.jpg', 'soda-russian.jpg'];
 var GOOD_CONTENTS = ['молоко', 'сливки', 'вода', 'пищевой краситель', 'патока', 'ароматизатор бекона', 'ароматизатор свинца', 'ароматизатор дуба, идентичный натуральному', 'ароматизатор картофеля', 'лимонная кислота', 'загуститель', 'эмульгатор', 'консервант: сорбат калия', 'посолочная смесь: соль, нитрит натрия', 'ксилит', 'карбамид', 'вилларибо', 'виллабаджо'];
-var CONTENTS_AMOUNT = 5;
 var GOODS_AMOUNT = 26;
 var GOODS_FOR_ORDER = 3;
 var PICTURE_PATH = 'img/cards/';
@@ -28,16 +27,16 @@ var getRandomPicture = function (folderPath) {
   return folderPath + GOOD_PICTURES[getRandomInd(GOOD_PICTURES)];
 };
 
-var getContent = function (contentArray, amount) {
-  var contents = contentArray[getRandomInd(contentArray)];
-  for (var i = 1; i < amount; i++) {
-    // TODO: обсудить возможность исключения повторов
-    // if (contents.includes(contentArray[getRandomInd(contentArray)])) {
-    //   continue;
-    // }
-    contents += ', ' + contentArray[getRandomInd(contentArray)];
+var getContent = function (contentArray) {
+  var arrayCopy = contentArray.slice(); // делаем копию исходного массива
+  var randomAmount = getRandomNum(1, arrayCopy.length); // количество свойств, которые будут объединены
+  var contents = []; // новый массив
+  for (var i = 0; i < randomAmount; i++) {
+    var randomElemIndex = getRandomNum(0, arrayCopy.length - 1); // рандомный элемент массива, который будем вырезать
+    var removedElem = arrayCopy.splice(randomElemIndex, 1); // вырезаем один рандомный элемент (массив с одним элементом)
+    contents.push(removedElem); // пушим массив с одним элементом в массив contents
   }
-  return contents;
+  return contents.join(', '); // трансоформируем весь массив в строку с разделителем
 };
 
 var getGoodParam = function () {
@@ -54,7 +53,7 @@ var getGoodParam = function () {
     nutritionFacts: {
       sugar: getRandomBool(),
       energy: getRandomNum(70, 500),
-      contents: getContent(GOOD_CONTENTS, CONTENTS_AMOUNT)
+      contents: getContent(GOOD_CONTENTS)
     }
   };
 };
@@ -81,7 +80,6 @@ var addCardElems = function () {
     cardElem.querySelector('.card__title').textContent = good.name;
     cardElem.querySelector('.star__count').textContent = good.rating.number;
     cardElem.querySelector('.card__composition-list').textContent = good.nutritionFacts.contents;
-    // cardElem.querySelector('.card__price').innerHTML = good.price + ' <span class="card__currency">₽</span><span class="card__weight">/ ' + good.weight + ' Г</span>';
     cardElem.querySelector('.card__price').childNodes[0].textContent = good.price + ' ';
     cardElem.querySelector('.card__weight').textContent = '/ ' + good.weight + ' Г';
 
@@ -104,29 +102,26 @@ var addCardElems = function () {
     cardElem.querySelector('.card__characteristic').textContent = !good.nutritionFacts.sugar ? 'Без сахара. ' + energyCalElem : 'Содержит сахар. ' + energyCalElem;
 
     cardElem.querySelector('.stars__rating').classList.remove('stars__rating--five');
+    var starsValue = [{
+      class: 'one',
+      end: 'а'
+    }, {
+      class: 'two',
+      end: 'ы'
+    }, {
+      class: 'three',
+      end: 'ы'
+    }, {
+      class: 'four',
+      end: 'ы'
+    }, {
+      class: 'five',
+      end: ''
+    }];
+    var starsElem = starsValue[good.rating.value - 1];
     var ratingElem = 'Рейтинг: ' + good.rating.value + ' звезд';
-    switch (good.rating.value) {
-      case 1:
-        cardElem.querySelector('.stars__rating').classList.add('stars__rating--one');
-        cardElem.querySelector('.stars__rating').textContent = ratingElem + 'а';
-        break;
-      case 2:
-        cardElem.querySelector('.stars__rating').classList.add('stars__rating--two');
-        cardElem.querySelector('.stars__rating').textContent = ratingElem + 'ы';
-        break;
-      case 3:
-        cardElem.querySelector('.stars__rating').classList.add('stars__rating--three');
-        cardElem.querySelector('.stars__rating').textContent = ratingElem + 'ы';
-        break;
-      case 4:
-        cardElem.querySelector('.stars__rating').classList.add('stars__rating--four');
-        cardElem.querySelector('.stars__rating').textContent = ratingElem + 'ы';
-        break;
-
-      default:
-        cardElem.querySelector('.stars__rating').classList.add('stars__rating--five');
-        cardElem.querySelector('.stars__rating').textContent = ratingElem;
-    }
+    cardElem.querySelector('.stars__rating').classList.add('stars__rating--' + starsElem.class);
+    cardElem.querySelector('.stars__rating').textContent = ratingElem + starsElem.end;
 
     return cardElem;
   };
