@@ -18,13 +18,8 @@ var getRandomBool = function () {
   return Math.random() < 0.5;
 };
 
-
-var getRandomName = function (names) {
-  return names[getRandomInd(names)];
-};
-
-var getRandomPicture = function (folderPath) {
-  return folderPath + GOOD_PICTURES[getRandomInd(GOOD_PICTURES)];
+var getRandomProp = function (property) {
+  return property[getRandomInd(property)];
 };
 
 var getContent = function (contentArray) {
@@ -41,8 +36,8 @@ var getContent = function (contentArray) {
 
 var getGoodParam = function () {
   return {
-    name: getRandomName(GOOD_NAMES),
-    picture: getRandomPicture(PICTURE_PATH),
+    name: getRandomProp(GOOD_NAMES),
+    picture: PICTURE_PATH + getRandomProp(GOOD_PICTURES),
     amount: getRandomNum(0, 20),
     price: getRandomNum(100, 1500),
     weight: getRandomNum(30, 300),
@@ -94,8 +89,6 @@ var addCardElems = function () {
       } else if (good.amount < 1) {
         cardElem.classList.add('card--soon');
       }
-    } else {
-      cardElem.classList.add('card--in-stock');
     }
 
     var energyCalElem = good.nutritionFacts.energy + ' ккал';
