@@ -84,15 +84,11 @@ var addCardElems = function () {
 
     if (good.amount <= 5) {
       cardElem.classList.remove('card--in-stock');
-      if (good.amount > 1) {
-        cardElem.classList.add('card--little');
-      } else if (good.amount < 1) {
-        cardElem.classList.add('card--soon');
-      }
+      cardElem.classList.add('card--' + (good.amount > 1 ? 'little' : 'soon'));
     }
 
     var energyCalElem = good.nutritionFacts.energy + ' ккал';
-    cardElem.querySelector('.card__characteristic').textContent = !good.nutritionFacts.sugar ? 'Без сахара. ' + energyCalElem : 'Содержит сахар. ' + energyCalElem;
+    cardElem.querySelector('.card__characteristic').textContent = (!good.nutritionFacts.sugar ? 'Без сахара. ' : 'Содержит сахар. ') + energyCalElem;
 
     cardElem.querySelector('.stars__rating').classList.remove('stars__rating--five');
     var starsValue = [{
