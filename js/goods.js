@@ -4,7 +4,7 @@ var GOOD_NAMES = ['Чесночные сливки', 'Огуречный пед�
 var GOOD_PICTURES = ['gum-cedar.jpg', 'gum-chile.jpg', 'gum-eggplant.jpg', 'gum-mustard.jpg', 'gum-portwine.jpg', 'gum-wasabi.jpg', 'ice-cucumber.jpg', 'ice-eggplant.jpg', 'ice-garlic.jpg', 'ice-italian.jpg', 'ice-mushroom.jpg', 'ice-pig.jpg', 'marmalade-beer.jpg', 'marmalade-caviar.jpg', 'marmalade-corn.jpg', 'marmalade-new-year.jpg', 'marmalade-sour.jpg', 'marshmallow-bacon.jpg', 'marshmallow-beer.jpg', 'marshmallow-shrimp.jpg', 'marshmallow-spicy.jpg', 'marshmallow-wine.jpg', 'soda-bacon.jpg', 'soda-celery.jpg', 'soda-cob.jpg', 'soda-garlic.jpg', 'soda-peanut-grapes.jpg', 'soda-russian.jpg'];
 var GOOD_CONTENTS = ['молоко', 'сливки', 'вода', 'пищевой краситель', 'патока', 'ароматизатор бекона', 'ароматизатор свинца', 'ароматизатор дуба, идентичный натуральному', 'ароматизатор картофеля', 'лимонная кислота', 'загуститель', 'эмульгатор', 'консервант: сорбат калия', 'посолочная смесь: соль, нитрит натрия', 'ксилит', 'карбамид', 'вилларибо', 'виллабаджо'];
 var GOODS_AMOUNT = 26;
-var GOODS_FOR_ORDER = 3;
+// var GOODS_FOR_ORDER = 3;
 var PICTURE_PATH = 'img/cards/';
 
 
@@ -116,44 +116,60 @@ var addCardElems = function () {
   };
 
   var cardFragment = document.createDocumentFragment();
-  var cards = createGoods(GOODS_AMOUNT);
   for (var i = 0; i < cards.length; i++) {
     cardFragment.appendChild(renderCard(cards[i]));
   }
 
   return catalogCardsElem.appendChild(cardFragment);
 };
+addCardElems();
+
+var cards = createGoods(GOODS_AMOUNT); // массив всех карточек
+
+// находим элемент карточки, на которой кликнули добавить в корзину
+var cardElem = document.querySelectorAll('.card');
+for (var i = 0; i < cardElem.length; i++) {
+  cardElem[i].addEventListener('click', function (evt) {
+    if (evt.target.className === 'card__btn') {
+      return evt.currentTarget;
+    }
+    return evt.stopPropagation;
+  });
+}
+
+// var addForOrder = function () {
+//   var cardOrderElemTemplate = document.querySelector('#card-order').content.querySelector('.goods_card');
+//   var cardOrderElem = document.querySelector('.goods__cards');
+
+//   if (cardOrderElem.classList.contains('goods__cards--empty')) {
+//     cardOrderElem.classList.remove('goods__cards--empty');
+//     cardOrderElem.children[0].classList.add('visually-hidden');
+//   }
+
+//   var renderCardOrder = function (good) {
+//     var orderElem = cardOrderElemTemplate.cloneNode(true);
+//     orderElem.querySelector('.card-order__title').textContent = good.name;
+//     orderElem.querySelector('.card-order__price').textContent = good.price + ' ₽';
+
+//     var cardOrderImgElem = orderElem.querySelector('.card-order__img');
+//     cardOrderImgElem.src = good.picture;
+//     cardOrderImgElem.alt = good.name;
+
+//     return orderElem;
+//   };
+
+//   var cardOrderFragment = document.createDocumentFragment();
+//   for (var j = 0; j < cardForOrder.length; j++) {
+//     cardOrderFragment.appendChild(renderCardOrder(cardForOrder[j]));
+//   }
+
+//   return cardOrderElem.appendChild(cardOrderFragment);
+// };
+
+// addForOrder(); // временно вызываем функцию вручную
 
 
-var addForOrder = function () {
-  var cardOrderElemTemplate = document.querySelector('#card-order').content.querySelector('.goods_card');
-  var cardOrderElem = document.querySelector('.goods__cards');
-
-  if (cardOrderElem.classList.contains('goods__cards--empty')) {
-    cardOrderElem.classList.remove('goods__cards--empty');
-    cardOrderElem.children[0].classList.add('visually-hidden');
-  }
-
-  var renderCardOrder = function (good) {
-    var orderElem = cardOrderElemTemplate.cloneNode(true);
-    orderElem.querySelector('.card-order__title').textContent = good.name;
-    orderElem.querySelector('.card-order__price').textContent = good.price + ' ₽';
-
-    var cardOrderImgElem = orderElem.querySelector('.card-order__img');
-    cardOrderImgElem.src = good.picture;
-    cardOrderImgElem.alt = good.name;
-
-    return orderElem;
-  };
-
-  var cardOrderFragment = document.createDocumentFragment();
-  var cardsForOrder = createGoods(GOODS_FOR_ORDER);
-  for (var j = 0; j < cardsForOrder.length; j++) {
-    cardOrderFragment.appendChild(renderCardOrder(cardsForOrder[j]));
-  }
-
-  return cardOrderElem.appendChild(cardOrderFragment);
-};
-
-addCardElems(); // временно вызываем функцию вручную
-addForOrder(); // временно вызываем функцию вручную
+var favoriteButtonElem = document.querySelector('.card__btn-favorite'); // кнопка избранного
+favoriteButtonElem.addEventListener('click', function () {
+  favoriteButtonElem.classList.toggle('card__btn-favorite--selected');
+});
