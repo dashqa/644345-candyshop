@@ -116,6 +116,7 @@ var addCardElems = function () {
   };
 
   var cardFragment = document.createDocumentFragment();
+  var cards = createGoods(GOODS_AMOUNT); // массив всех карточек
   for (var i = 0; i < cards.length; i++) {
     cardFragment.appendChild(renderCard(cards[i]));
   }
@@ -124,7 +125,6 @@ var addCardElems = function () {
 };
 addCardElems();
 
-var cards = createGoods(GOODS_AMOUNT); // массив всех карточек
 
 // находим элемент карточки, на которой кликнули добавить в корзину
 var cardElem = document.querySelectorAll('.card');
