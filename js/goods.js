@@ -137,7 +137,7 @@ var addCardElems = function () {
 
   return catalogCardsElem.appendChild(cardFragment);
 };
-addCardElems();
+addCardElems(); // временно запускаем вручную
 
 // меняет кол-во одного уникального товара в корзине
 var changeGoodOrderAmount = function (name, isIncrease) {
@@ -234,7 +234,7 @@ var renderBasket = function () {
         changeGoodOrderAmount(good.name, true);
         orderElem.querySelector('.card-order__count').setAttribute('value', good.orderedAmount);
         displayOutOfStockElem(window.currentGoodAmount);
-        calcTotalOrder();
+        renderTotalOrderElem();
 
         // если уменьшаем кол-во
       } else if (evt.target.classList.contains('card-order__btn--decrease')) {
@@ -242,7 +242,7 @@ var renderBasket = function () {
         orderElem.querySelector('.card-order__count').setAttribute('value', good.orderedAmount);
         displayEmptyOrderStub();
         displayOutOfStockElem(window.currentGoodAmount);
-        calcTotalOrder();
+        renderTotalOrderElem();
       }
     });
 
@@ -266,7 +266,7 @@ var renderBasket = function () {
       if (evt.target.classList.contains('card-order__close')) {
         evt.preventDefault();
         good.orderedAmount = 0;
-        calcTotalOrder();
+        renderTotalOrderElem();
         displayEmptyOrderStub();
       }
     });
@@ -274,29 +274,36 @@ var renderBasket = function () {
     return orderElem;
   };
 
-  var calcTotalOrder = function () {
+  // отображение итога кол-ва товаров и цены
+  var renderTotalOrderElem = function () {
     var totalOrderAmount = basketGoods.length;
+    var basketElemInHeader = document.querySelector('.main-header__basket');
 
-    var calcTotalPrice = function () {
+    var calcTotal = function () {
       var totalPrice = 0;
-      for (var i = 0; i <= totalOrderAmount - 1; i++) {
-        totalPrice += basketGoods[i].price * basketGoods[i].orderedAmount;
-      }
-      return totalPrice;
-    };
-
-    var calcOrderAmount = function () {
       var totalAmount = 0;
       for (var i = 0; i <= totalOrderAmount - 1; i++) {
+        totalPrice += basketGoods[i].price * basketGoods[i].orderedAmount;
         totalAmount += basketGoods[i].orderedAmount;
       }
-      return totalAmount;
+      return {
+        totalPrice: totalPrice,
+        totalAmount: totalAmount
+      };
     };
 
-    goodsTotalElem.querySelector('.goods__total-count').textContent = 'Итого за ' + calcOrderAmount() + ' товаров: ' + calcTotalPrice() + ' ₽';
+    // склоняет окончание слова в зависимости от числа
+    function declOfNum(number, titles) {
+      var cases = [2, 0, 1, 1, 1, 2];
+      return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
+    }
+
+    var totalWithDecline = calcTotal().totalAmount + ' ' + declOfNum(calcTotal().totalAmount, ['товар', 'товара', 'товаров']);
+    goodsTotalElem.querySelector('.goods__total-count').textContent = 'Итого за ' + totalWithDecline + ': ' + calcTotal().totalPrice + ' ₽';
+    basketElemInHeader.textContent = 'В корзине ' + totalWithDecline;
   };
 
-  calcTotalOrder();
+  renderTotalOrderElem();
 
   var cardOrderFragment = document.createDocumentFragment();
   for (var j = 0; j < basketGoods.length; j++) {
@@ -306,3 +313,66 @@ var renderBasket = function () {
   goodsWrapperElem.innerHTML = '';
   return goodsWrapperElem.appendChild(cardOrderFragment);
 };
+
+var changeDeliveryMethod = function () {
+  var toggleBtnElem = document.querySelector('.deliver__toggle');
+
+  toggleBtnElem.addEventListener('click', function (evt) {
+    var deliveryStoreWrap = document.querySelector('.deliver__store');
+    var deliveryCourierWrap = document.querySelector('.deliver__courier');
+
+    if (evt.target.id === 'deliver__store') {
+      onButtonClick(deliveryStoreWrap, deliveryCourierWrap);
+
+    } else if (evt.target.id === 'deliver__courier') {
+      onButtonClick(deliveryCourierWrap, deliveryStoreWrap);
+    }
+  });
+
+  var onButtonClick = function (thisWrap, anotherWrap) {
+    if (thisWrap.classList.contains('visually-hidden')) {
+      thisWrap.classList.remove('visually-hidden');
+      anotherWrap.classList.add('visually-hidden');
+    }
+  };
+
+};
+
+changeDeliveryMethod();
+
+// var rangeSliderHandler.addEventListener('mousedown', function (evt) {
+//   evt.preventDefault();
+
+//   var dragged = false;
+//   var startXCoords = evt.clientX;
+
+//   var onMouseMove = function (moveEvt) {
+//     moveEvt.preventDefault();
+//     dragged = true;
+//     var shift = startXCoords - moveEvt.clientX;
+
+//     startCoord = moveEvt.clientX;
+//     setupDialogElement.style.top = (setupDialogElement.offsetTop - shift.y) + 'px';
+//     setupDialogElement.style.left = (setupDialogElement.offsetLeft - shift.x) + 'px';
+
+//   };
+
+//   var onMouseUp = function (upEvt) {
+//     upEvt.preventDefault();
+
+//     document.removeEventListener('mousemove', onMouseMove);
+//     document.removeEventListener('mouseup', onMouseUp);
+
+//     if (dragged) {
+//       var onClickPreventDefault = function (evt) {
+//         evt.preventDefault();
+//         dialogHandler.removeEventListener('click', onClickPreventDefault)
+//       };
+//       dialogHandler.addEventListener('click', onClickPreventDefault);
+//     }
+
+//   };
+
+//   document.addEventListener('mousemove', onMouseMove);
+//   document.addEventListener('mouseup', onMouseUp);
+// });
