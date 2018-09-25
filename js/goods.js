@@ -22,6 +22,12 @@ var getRandomProp = function (property) {
   return property[getRandomInd(property)];
 };
 
+// склоняет окончание слова в зависимости от числа
+function declOfNum(number, titles) {
+  var cases = [2, 0, 1, 1, 1, 2];
+  return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
+}
+
 var getContent = function (contentArray) {
   var arrayCopy = contentArray.slice(); // делаем копию исходного массива
   var randomAmount = getRandomNum(1, arrayCopy.length); // количество свойств, которые будут объединены
@@ -106,26 +112,11 @@ var addCardElems = function () {
     cardElem.querySelector('.card__characteristic').textContent = (!good.nutritionFacts.sugar ? 'Без сахара. ' : 'Содержит сахар. ') + energyCalElem;
 
     cardElem.querySelector('.stars__rating').classList.remove('stars__rating--five');
-    var starsValue = [{
-      class: 'one',
-      end: 'а'
-    }, {
-      class: 'two',
-      end: 'ы'
-    }, {
-      class: 'three',
-      end: 'ы'
-    }, {
-      class: 'four',
-      end: 'ы'
-    }, {
-      class: 'five',
-      end: ''
-    }];
+    var starsValue = ['one', 'two', 'three', 'four', 'five'];
     var starsElem = starsValue[good.rating.value - 1];
-    var ratingElem = 'Рейтинг: ' + good.rating.value + ' звезд';
-    cardElem.querySelector('.stars__rating').classList.add('stars__rating--' + starsElem.class);
-    cardElem.querySelector('.stars__rating').textContent = ratingElem + starsElem.end;
+    var ratingElem = 'Рейтинг: ' + good.rating.value + ' ' + declOfNum(good.rating.value, ['звезда', 'звезды', 'звезд']);
+    cardElem.querySelector('.stars__rating').classList.add('stars__rating--' + starsElem);
+    cardElem.querySelector('.stars__rating').textContent = ratingElem;
 
     return cardElem;
   };
@@ -292,12 +283,6 @@ var renderBasket = function () {
       };
     };
 
-    // склоняет окончание слова в зависимости от числа
-    function declOfNum(number, titles) {
-      var cases = [2, 0, 1, 1, 1, 2];
-      return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
-    }
-
     var totalWithDecline = calcTotal().totalAmount + ' ' + declOfNum(calcTotal().totalAmount, ['товар', 'товара', 'товаров']);
     goodsTotalElem.querySelector('.goods__total-count').textContent = 'Итого за ' + totalWithDecline + ': ' + calcTotal().totalPrice + ' ₽';
     basketElemInHeader.textContent = 'В корзине ' + totalWithDecline;
@@ -331,60 +316,177 @@ var changeDeliveryMethod = function () {
 
 changeDeliveryMethod();
 
+// var kaka = function () {
+//   var MAX_PRICE = 270;
+//   var MIN_PRICE = 20;
+//   var filterBar = document.querySelector('.range__filter');
+//   var leftHandle = filterBar.querySelector('.range__btn--left');
+//   var rightHandle = filterBar.querySelector('.range__btn--right');
+//   var rangeLine = filterBar.querySelector('.range__fill-line');
+//   var filterBarWidth = filterBar.offsetWidth;
+//   var rangePriceMin = document.querySelector('.range__price--min');
+//   var rangePriceMax = document.querySelector('.range__price--max');
 
+//   // функция ограничивающая перемещение левого пина
+//   var getCoordLeftHandle = function (newX) {
+//     var rightHandleX = rightHandle.offsetLeft;
+//     if (newX < 0) {
+//       newX = 0;
+//     } else if (newX > rightHandleX / filterBarWidth * 100) {
+//       newX = rightHandleX / filterBarWidth * 100;
+//     }
+//     return newX;
+//   };
 
-// var rangeSliderHandler = document.querySelector('.range__filter');
-// var rightToggler = document.querySelector('.range__btn--right');
-// var leftToggler = document.querySelector('.range__btn--left');
-// var fillLine = document.querySelector('.range__fill-line');
-// var minPriceElem = document.querySelector('.range__price--min');
-// var maxPriceElem = document.querySelector('.range__price--max');
+//   // функция ограничивающая перемещение правого пина
+//   var getCoordRightHandle = function (newX) {
+//     var leftHandleX = leftHandle.offsetLeft;
+//     if (newX > 100) {
+//       newX = 100;
+//     } else if (newX < leftHandleX / filterBarWidth * 100) {
+//       newX = leftHandleX / filterBarWidth * 100;
+//     }
+//     return newX;
+//   };
 
-// rangeSliderHandler.addEventListener('mousedown', function (evt) {
-//   evt.preventDefault();
+//   // перетаскивание левого пина
+//   leftHandle.addEventListener('mousedown', function (evt) {
+//     evt.preventDefault();
 
-//   var startPos = 0;
-//   var endPos = rangeSliderHandler.offsetWidth;
-//   var minPin = 0;
-//   var maxPin = 100;
-//   var step = 1;
-
-//   if (evt.target.classList.contains('range__btn--right')) {
-//     var startXCoords = evt.clientX;
+//     var startCoords = evt.clientX;
 
 //     var onMouseMove = function (moveEvt) {
 //       moveEvt.preventDefault();
 
-//       var shift = startXCoords - moveEvt.clientX;
+//       var shift = startCoords - moveEvt.clientX;
+//       startCoords = moveEvt.clientX;
 
-//       rightToggler.style.right = (rightToggler.offsetLeft - shift) + 'px';
-//       // fillLine.style.right = (rightToggler.offsetLeft - shift) + 'px';
-
+//       leftHandle.style.left = getCoordLeftHandle((leftHandle.offsetLeft - shift) / filterBarWidth * 100) + '%';
+//       rangeLine.style.left = getCoordLeftHandle((rangeLine.offsetLeft - shift) / filterBarWidth * 100) + '%';
+//       rangePriceMin.textContent = Math.round(getCoordRightHandle((leftHandle.offsetLeft - shift) / filterBarWidth * 100) * (MAX_PRICE - MIN_PRICE) / 100 + MIN_PRICE);
 //     };
-//   }
 
-//   // } else if (evt.target.classList.contains('range__btn--left')) {
+//     var onMouseUp = function (upEvt) {
+//       upEvt.preventDefault();
 
-//   // }
-
-//   var onMouseUp = function (upEvt) {
-//     upEvt.preventDefault();
-//     var onClickPreventDefault = function () {
-//       evt.preventDefault();
-//       rangeSliderHandler.removeEventListener('click', onClickPreventDefault);
+//       document.removeEventListener('mousemove', onMouseMove);
+//       document.removeEventListener('mouseup', onMouseUp);
 //     };
-//     document.removeEventListener('mousemove', onMouseMove);
-//     document.removeEventListener('mouseup', onMouseUp);
-//   };
 
-//   document.addEventListener('mousemove', onMouseMove);
-//   document.addEventListener('mouseup', onMouseUp);
-// });
+//     document.addEventListener('mousemove', onMouseMove);
+//     document.addEventListener('mouseup', onMouseUp);
+//   });
 
-// // function mouseXToValue(slide, mouseX) {
-// //   var ratioLeft = (mouseX - slide.rangeXStart) / slide.rangeWidth;
-// //   return ratioLeft * slide.width + slide.min;
-// // }
+//   // перетаскивание правого пина
+//   rightHandle.addEventListener('mousedown', function (evt) {
+//     evt.preventDefault();
 
-// //   var percent = 100*(value - slide.min) / slide.width;
-// //   slider.style.left = percent + '%';
+//     var startCoords = evt.clientX;
+
+//     var onMouseMove = function (moveEvt) {
+//       moveEvt.preventDefault();
+
+//       var shift = startCoords - moveEvt.clientX;
+//       startCoords = moveEvt.clientX;
+
+//       rightHandle.style.left = getCoordRightHandle((rightHandle.offsetLeft - shift) / filterBarWidth * 100) + '%';
+//       rangeLine.style.right = (100 - getCoordRightHandle((rangeLine.offsetLeft + rangeLine.offsetWidth - shift) / filterBarWidth * 100)) + '%';
+//       rangePriceMax.textContent = Math.round(getCoordRightHandle((rightHandle.offsetLeft - shift) / filterBarWidth * 100) * (MAX_PRICE - MIN_PRICE) / 100 + MIN_PRICE);
+//     };
+
+//     var onMouseUp = function (upEvt) {
+//       upEvt.preventDefault();
+
+//       document.removeEventListener('mousemove', onMouseMove);
+//       document.removeEventListener('mouseup', onMouseUp);
+//     };
+
+//     document.addEventListener('mousemove', onMouseMove);
+//     document.addEventListener('mouseup', onMouseUp);
+//   });
+// };
+
+// kaka();
+
+
+var rangeSliderHandler = document.querySelector('.range__filter');
+var rightToggler = rangeSliderHandler.querySelector('.range__btn--right');
+var leftToggler = rangeSliderHandler.querySelector('.range__btn--left');
+var fillLine = rangeSliderHandler.querySelector('.range__fill-line');
+var minPriceElem = document.querySelector('.range__price--min');
+var maxPriceElem = document.querySelector('.range__price--max');
+
+var posOffsetToggler = function (toggler) {
+  var togglerCenter = toggler.offsetWidth / 2;
+  return toggler.offsetLeft - togglerCenter;
+};
+
+rangeSliderHandler.addEventListener('mousedown', function (evt) {
+  evt.preventDefault();
+
+  var slider = {
+    startPos: 0,
+    endPos: rangeSliderHandler.offsetWidth,
+    minPin: 0,
+    maxPin: 100
+  };
+
+  var calcSliderBound = function (slide, newCoordinate) {
+    if (slide === 'right') {
+      var leftTogglerX = posOffsetToggler(leftToggler) / slider.endPos * 100;
+      if (newCoordinate >= 100) {
+        newCoordinate = 100;
+      } else if (newCoordinate <= leftTogglerX) {
+        newCoordinate = leftTogglerX;
+      }
+    } else if (slide === 'left') {
+      var rightTogglerX = posOffsetToggler(rightToggler) / slider.endPos * 100;
+      if (newCoordinate <= slider.startPos) {
+        newCoordinate = slider.startPos;
+      } else if (newCoordinate <= rightTogglerX) {
+        newCoordinate = rightTogglerX;
+      }
+    }
+    return newCoordinate;
+  };
+
+  if (evt.target.classList.contains('range__btn--right')) {
+    evt.preventDefault();
+    var startXCoords = evt.clientX;
+
+    var onMouseMove = function (moveEvt) {
+      moveEvt.preventDefault();
+
+      var shift = startXCoords - moveEvt.clientX;
+      startXCoords = moveEvt.clientX;
+
+      rightToggler.style.left = calcSliderBound('right', (posOffsetToggler(rightToggler) - shift) / slider.endPos * 100) + '%';
+      // fillLine.style.right = ((fillLine.offsetLeft - shift) / slider.endPos * 100) + '%';
+
+    };
+
+    // } else if (evt.target.classList.contains('range__btn--left')) {
+
+    // }
+
+    var onMouseUp = function (upEvt) {
+      upEvt.preventDefault();
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  }
+
+});
+
+
+
+  // function mouseXToValue(slide, mouseX) {
+//   var ratioLeft = (mouseX - slide.rangeXStart) / slide.rangeWidth;
+//   return ratioLeft * slide.width + slide.min;
+// }
+
+//   var percent = 100*(value - slide.min) / slide.width;
+//   slider.style.left = percent + '%';
