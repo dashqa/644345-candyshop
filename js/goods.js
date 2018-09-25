@@ -415,42 +415,55 @@ var leftToggler = rangeSliderHandler.querySelector('.range__btn--left');
 var fillLine = rangeSliderHandler.querySelector('.range__fill-line');
 var minPriceElem = document.querySelector('.range__price--min');
 var maxPriceElem = document.querySelector('.range__price--max');
+var toggleCenter = rightToggler.offsetWidth / 2;
 
-var posOffsetToggler = function (toggler) {
-  var togglerCenter = toggler.offsetWidth / 2;
-  return toggler.offsetLeft - togglerCenter;
-};
 
 rangeSliderHandler.addEventListener('mousedown', function (evt) {
   evt.preventDefault();
 
   var slider = {
     startPos: 0,
-    endPos: rangeSliderHandler.offsetWidth,
+    endPos: rangeSliderHandler.offsetWidth - toggleCenter,
     minPin: 0,
     maxPin: 100
   };
 
   var calcSliderBound = function (slide, newCoordinate) {
+    var rightTogglerX = rightToggler.offsetLeft;
+    var leftTogglerX = leftToggler.offsetLeft;
+
     if (slide === 'right') {
-      var leftTogglerX = posOffsetToggler(leftToggler) / slider.endPos * 100;
-      if (newCoordinate >= 100) {
-        newCoordinate = 100;
+      if (newCoordinate >= slider.endPos) {
+        newCoordinate = slider.endPos;
       } else if (newCoordinate <= leftTogglerX) {
         newCoordinate = leftTogglerX;
       }
     } else if (slide === 'left') {
-      var rightTogglerX = posOffsetToggler(rightToggler) / slider.endPos * 100;
       if (newCoordinate <= slider.startPos) {
         newCoordinate = slider.startPos;
-      } else if (newCoordinate <= rightTogglerX) {
+      } else if (newCoordinate >= rightTogglerX) {
         newCoordinate = rightTogglerX;
       }
     }
     return newCoordinate;
   };
 
-  if (evt.target.classList.contains('range__btn--right')) {
+  // if (evt.target.classList.contains('range__btn--right')) {
+  //   evt.preventDefault();
+  //   var startXCoords = evt.clientX;
+
+  //   var onMouseMove = function (moveEvt) {
+  //     moveEvt.preventDefault();
+
+  //     var shift = startXCoords - moveEvt.clientX;
+  //     startXCoords = moveEvt.clientX;
+
+  //     rightToggler.style.left = calcSliderBound('right', rightToggler.offsetLeft - shift) + 'px';
+  //     // fillLine.style.right = ((fillLine.offsetLeft - shift) / slider.endPos * 100) + '%';
+  //   };
+
+  // } else
+  if (evt.target.classList.contains('range__btn--left')) {
     evt.preventDefault();
     var startXCoords = evt.clientX;
 
@@ -460,30 +473,25 @@ rangeSliderHandler.addEventListener('mousedown', function (evt) {
       var shift = startXCoords - moveEvt.clientX;
       startXCoords = moveEvt.clientX;
 
-      rightToggler.style.left = calcSliderBound('right', (posOffsetToggler(rightToggler) - shift) / slider.endPos * 100) + '%';
+      leftToggler.style.left = calcSliderBound('left', leftToggler.offsetLeft - shift) + 'px';
       // fillLine.style.right = ((fillLine.offsetLeft - shift) / slider.endPos * 100) + '%';
-
     };
-
-    // } else if (evt.target.classList.contains('range__btn--left')) {
-
-    // }
-
-    var onMouseUp = function (upEvt) {
-      upEvt.preventDefault();
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-    };
-
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
   }
+
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
 
 });
 
 
 
-  // function mouseXToValue(slide, mouseX) {
+// function mouseXToValue(slide, mouseX) {
 //   var ratioLeft = (mouseX - slide.rangeXStart) / slide.rangeWidth;
 //   return ratioLeft * slide.width + slide.min;
 // }
