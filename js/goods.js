@@ -316,99 +316,6 @@ var changeDeliveryMethod = function () {
 
 changeDeliveryMethod();
 
-// var kaka = function () {
-//   var MAX_PRICE = 270;
-//   var MIN_PRICE = 20;
-//   var filterBar = document.querySelector('.range__filter');
-//   var leftHandle = filterBar.querySelector('.range__btn--left');
-//   var rightHandle = filterBar.querySelector('.range__btn--right');
-//   var rangeLine = filterBar.querySelector('.range__fill-line');
-//   var filterBarWidth = filterBar.offsetWidth;
-//   var rangePriceMin = document.querySelector('.range__price--min');
-//   var rangePriceMax = document.querySelector('.range__price--max');
-
-//   // функция ограничивающая перемещение левого пина
-//   var getCoordLeftHandle = function (newX) {
-//     var rightHandleX = rightHandle.offsetLeft;
-//     if (newX < 0) {
-//       newX = 0;
-//     } else if (newX > rightHandleX / filterBarWidth * 100) {
-//       newX = rightHandleX / filterBarWidth * 100;
-//     }
-//     return newX;
-//   };
-
-//   // функция ограничивающая перемещение правого пина
-//   var getCoordRightHandle = function (newX) {
-//     var leftHandleX = leftHandle.offsetLeft;
-//     if (newX > 100) {
-//       newX = 100;
-//     } else if (newX < leftHandleX / filterBarWidth * 100) {
-//       newX = leftHandleX / filterBarWidth * 100;
-//     }
-//     return newX;
-//   };
-
-//   // перетаскивание левого пина
-//   leftHandle.addEventListener('mousedown', function (evt) {
-//     evt.preventDefault();
-
-//     var startCoords = evt.clientX;
-
-//     var onMouseMove = function (moveEvt) {
-//       moveEvt.preventDefault();
-
-//       var shift = startCoords - moveEvt.clientX;
-//       startCoords = moveEvt.clientX;
-
-//       leftHandle.style.left = getCoordLeftHandle((leftHandle.offsetLeft - shift) / filterBarWidth * 100) + '%';
-//       rangeLine.style.left = getCoordLeftHandle((rangeLine.offsetLeft - shift) / filterBarWidth * 100) + '%';
-//       rangePriceMin.textContent = Math.round(getCoordRightHandle((leftHandle.offsetLeft - shift) / filterBarWidth * 100) * (MAX_PRICE - MIN_PRICE) / 100 + MIN_PRICE);
-//     };
-
-//     var onMouseUp = function (upEvt) {
-//       upEvt.preventDefault();
-
-//       document.removeEventListener('mousemove', onMouseMove);
-//       document.removeEventListener('mouseup', onMouseUp);
-//     };
-
-//     document.addEventListener('mousemove', onMouseMove);
-//     document.addEventListener('mouseup', onMouseUp);
-//   });
-
-//   // перетаскивание правого пина
-//   rightHandle.addEventListener('mousedown', function (evt) {
-//     evt.preventDefault();
-
-//     var startCoords = evt.clientX;
-
-//     var onMouseMove = function (moveEvt) {
-//       moveEvt.preventDefault();
-
-//       var shift = startCoords - moveEvt.clientX;
-//       startCoords = moveEvt.clientX;
-
-//       rightHandle.style.left = getCoordRightHandle((rightHandle.offsetLeft - shift) / filterBarWidth * 100) + '%';
-//       rangeLine.style.right = (100 - getCoordRightHandle((rangeLine.offsetLeft + rangeLine.offsetWidth - shift) / filterBarWidth * 100)) + '%';
-//       rangePriceMax.textContent = Math.round(getCoordRightHandle((rightHandle.offsetLeft - shift) / filterBarWidth * 100) * (MAX_PRICE - MIN_PRICE) / 100 + MIN_PRICE);
-//     };
-
-//     var onMouseUp = function (upEvt) {
-//       upEvt.preventDefault();
-
-//       document.removeEventListener('mousemove', onMouseMove);
-//       document.removeEventListener('mouseup', onMouseUp);
-//     };
-
-//     document.addEventListener('mousemove', onMouseMove);
-//     document.addEventListener('mouseup', onMouseUp);
-//   });
-// };
-
-// kaka();
-
-
 var rangeSliderHandler = document.querySelector('.range__filter');
 var rightToggler = rangeSliderHandler.querySelector('.range__btn--right');
 var leftToggler = rangeSliderHandler.querySelector('.range__btn--left');
@@ -428,17 +335,35 @@ rangeSliderHandler.addEventListener('mousedown', function (evt) {
     maxPin: 100
   };
 
-  var calcSliderBound = function (slide, newCoordinate) {
+  var startXCoords = evt.clientX;
+
+  var onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+
+    var shift = startXCoords - moveEvt.clientX;
+    startXCoords = moveEvt.clientX;
+
+    // fillLine.style.right = ((fillLine.offsetLeft - shift) / slider.endPos * 100) + '%';
+
+    if (evt.target.classList.contains('range__btn--right')) {
+      evt.target.style.left = calcSliderBound(true, evt.target.offsetLeft - shift) + 'px';
+
+    } else if (evt.target.classList.contains('range__btn--left')) {
+      evt.target.style.left = calcSliderBound(false, evt.target.offsetLeft - shift) + 'px';
+    }
+  };
+
+  var calcSliderBound = function (isRight, newCoordinate) {
     var rightTogglerX = rightToggler.offsetLeft;
     var leftTogglerX = leftToggler.offsetLeft;
 
-    if (slide === 'right') {
+    if (isRight) {
       if (newCoordinate >= slider.endPos) {
         newCoordinate = slider.endPos;
       } else if (newCoordinate <= leftTogglerX) {
         newCoordinate = leftTogglerX;
       }
-    } else if (slide === 'left') {
+    } else if (!isRight) {
       if (newCoordinate <= slider.startPos) {
         newCoordinate = slider.startPos;
       } else if (newCoordinate >= rightTogglerX) {
@@ -447,36 +372,6 @@ rangeSliderHandler.addEventListener('mousedown', function (evt) {
     }
     return newCoordinate;
   };
-
-  // if (evt.target.classList.contains('range__btn--right')) {
-  //   evt.preventDefault();
-  //   var startXCoords = evt.clientX;
-
-  //   var onMouseMove = function (moveEvt) {
-  //     moveEvt.preventDefault();
-
-  //     var shift = startXCoords - moveEvt.clientX;
-  //     startXCoords = moveEvt.clientX;
-
-  //     rightToggler.style.left = calcSliderBound('right', rightToggler.offsetLeft - shift) + 'px';
-  //     // fillLine.style.right = ((fillLine.offsetLeft - shift) / slider.endPos * 100) + '%';
-  //   };
-
-  // } else
-  if (evt.target.classList.contains('range__btn--left')) {
-    evt.preventDefault();
-    var startXCoords = evt.clientX;
-
-    var onMouseMove = function (moveEvt) {
-      moveEvt.preventDefault();
-
-      var shift = startXCoords - moveEvt.clientX;
-      startXCoords = moveEvt.clientX;
-
-      leftToggler.style.left = calcSliderBound('left', leftToggler.offsetLeft - shift) + 'px';
-      // fillLine.style.right = ((fillLine.offsetLeft - shift) / slider.endPos * 100) + '%';
-    };
-  }
 
   var onMouseUp = function (upEvt) {
     upEvt.preventDefault();
@@ -488,13 +383,3 @@ rangeSliderHandler.addEventListener('mousedown', function (evt) {
   document.addEventListener('mouseup', onMouseUp);
 
 });
-
-
-
-// function mouseXToValue(slide, mouseX) {
-//   var ratioLeft = (mouseX - slide.rangeXStart) / slide.rangeWidth;
-//   return ratioLeft * slide.width + slide.min;
-// }
-
-//   var percent = 100*(value - slide.min) / slide.width;
-//   slider.style.left = percent + '%';
