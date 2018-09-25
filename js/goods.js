@@ -314,76 +314,77 @@ var renderBasket = function () {
   return goodsWrapperElem.appendChild(cardOrderFragment);
 };
 
+
 var changeDeliveryMethod = function () {
   var toggleBtnElem = document.querySelector('.deliver__toggle');
+  var deliveryStoreWrap = document.querySelector('.deliver__store');
+  var deliveryCourierWrap = document.querySelector('.deliver__courier');
 
-  toggleBtnElem.addEventListener('click', function (evt) {
-    var deliveryStoreWrap = document.querySelector('.deliver__store');
-    var deliveryCourierWrap = document.querySelector('.deliver__courier');
-
-    if (evt.target.id === 'deliver__store') {
-      onButtonClick(deliveryStoreWrap, deliveryCourierWrap);
-
-    } else if (evt.target.id === 'deliver__courier') {
-      onButtonClick(deliveryCourierWrap, deliveryStoreWrap);
+  toggleBtnElem.addEventListener('change', function (evt) {
+    if (evt.target.id === 'deliver__courier' ||
+      evt.target.id === 'deliver__store') {
+      deliveryStoreWrap.classList.toggle('visually-hidden');
+      deliveryCourierWrap.classList.toggle('visually-hidden');
     }
   });
-
-  var onButtonClick = function (thisWrap, anotherWrap) {
-    if (thisWrap.classList.contains('visually-hidden')) {
-      thisWrap.classList.remove('visually-hidden');
-      anotherWrap.classList.add('visually-hidden');
-    }
-  };
-
 };
 
 changeDeliveryMethod();
 
 
-var rangeSliderHandler = document.querySelector('.range__filter');
-rangeSliderHandler.addEventListener('mousedown', function (evt) {
-  evt.preventDefault();
-  var rightToggler = document.querySelector('.range__btn--right');
-  // var leftToggler = document.querySelector('.range__btn--left');
 
+// var rangeSliderHandler = document.querySelector('.range__filter');
+// var rightToggler = document.querySelector('.range__btn--right');
+// var leftToggler = document.querySelector('.range__btn--left');
+// var fillLine = document.querySelector('.range__fill-line');
+// var minPriceElem = document.querySelector('.range__price--min');
+// var maxPriceElem = document.querySelector('.range__price--max');
 
-  if (evt.target.classList.contains('range__btn--right')) {
-    var startCoords = {
-      x: evt.clientX,
-      y: evt.clientY
-    };
+// rangeSliderHandler.addEventListener('mousedown', function (evt) {
+//   evt.preventDefault();
 
-    var onMouseMove = function (moveEvt) {
-      moveEvt.preventDefault();
+//   var startPos = 0;
+//   var endPos = rangeSliderHandler.offsetWidth;
+//   var minPin = 0;
+//   var maxPin = 100;
+//   var step = 1;
 
-      startCoords = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
-      };
+//   if (evt.target.classList.contains('range__btn--right')) {
+//     var startXCoords = evt.clientX;
 
-      var shift = {
-        x: startCoords.x - moveEvt.clientX,
-        y: startCoords.y - moveEvt.clientY
-      };
+//     var onMouseMove = function (moveEvt) {
+//       moveEvt.preventDefault();
 
-      rightToggler.style.right = (rightToggler.offsetLeft - shift.x) + 'px';
-    };
+//       var shift = startXCoords - moveEvt.clientX;
 
-    var onMouseUp = function (upEvt) {
-      upEvt.preventDefault();
-      var onClickPreventDefault = function () {
-        evt.preventDefault();
-        rangeSliderHandler.removeEventListener('click', onClickPreventDefault);
-      };
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-    };
+//       rightToggler.style.right = (rightToggler.offsetLeft - shift) + 'px';
+//       // fillLine.style.right = (rightToggler.offsetLeft - shift) + 'px';
 
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-  }
+//     };
+//   }
 
-  // var minPin = 0;
-  // var maxPin = 100;
-});
+//   // } else if (evt.target.classList.contains('range__btn--left')) {
+
+//   // }
+
+//   var onMouseUp = function (upEvt) {
+//     upEvt.preventDefault();
+//     var onClickPreventDefault = function () {
+//       evt.preventDefault();
+//       rangeSliderHandler.removeEventListener('click', onClickPreventDefault);
+//     };
+//     document.removeEventListener('mousemove', onMouseMove);
+//     document.removeEventListener('mouseup', onMouseUp);
+//   };
+
+//   document.addEventListener('mousemove', onMouseMove);
+//   document.addEventListener('mouseup', onMouseUp);
+// });
+
+// // function mouseXToValue(slide, mouseX) {
+// //   var ratioLeft = (mouseX - slide.rangeXStart) / slide.rangeWidth;
+// //   return ratioLeft * slide.width + slide.min;
+// // }
+
+// //   var percent = 100*(value - slide.min) / slide.width;
+// //   slider.style.left = percent + '%';
