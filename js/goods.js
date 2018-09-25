@@ -220,23 +220,25 @@ var renderBasket = function () {
         }
       };
 
-      // если увеличиваем кол-во
-      if (evt.target.classList.contains('card-order__btn--increase')) {
-        changeGoodOrderAmount(good.name, true);
+      // событие при нажатии на увеличение/уменьшение кол-ва товара
+      var onChangeAmountButtonClick = function () {
         orderElem.querySelector('.card-order__count').setAttribute('value', good.orderedAmount);
         displayOutOfStockElem(window.currentGoodAmount);
         renderTotalOrderElem();
+      };
+
+      // если увеличиваем кол-во
+      if (evt.target.classList.contains('card-order__btn--increase')) {
+        changeGoodOrderAmount(good.name, true);
+        onChangeAmountButtonClick();
 
         // если уменьшаем кол-во
       } else if (evt.target.classList.contains('card-order__btn--decrease')) {
         changeGoodOrderAmount(good.name, false);
-        orderElem.querySelector('.card-order__count').setAttribute('value', good.orderedAmount);
         displayEmptyOrderStub();
-        displayOutOfStockElem(window.currentGoodAmount);
-        renderTotalOrderElem();
+        onChangeAmountButtonClick();
       }
     });
-
 
     // отображение заглушки, если в корзине нет товаров
     var displayEmptyOrderStub = function () {
@@ -365,7 +367,7 @@ rangeSliderHandler.addEventListener('mousedown', function (evt) {
       } else if (newCoordinate <= leftTogglerX) {
         newCoordinate = leftTogglerX;
       }
-    } else if (!isRight) {
+    } else {
       if (newCoordinate <= slider.startPos) {
         newCoordinate = slider.startPos;
       } else if (newCoordinate >= rightTogglerX) {
