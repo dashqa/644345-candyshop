@@ -299,7 +299,7 @@ var renderBasket = function () {
   return goodsWrapperElem.appendChild(cardOrderFragment);
 };
 
-
+// смена способа доставки
 var changeDeliveryMethod = function () {
   var toggleBtnElem = document.querySelector('.deliver__toggle');
   var deliveryStoreWrap = document.querySelector('.deliver__store');
@@ -316,6 +316,7 @@ var changeDeliveryMethod = function () {
 
 changeDeliveryMethod();
 
+// ползунок фильтра по цене
 var rangeSliderHandler = document.querySelector('.range__filter');
 var rightToggler = rangeSliderHandler.querySelector('.range__btn--right');
 var leftToggler = rangeSliderHandler.querySelector('.range__btn--left');
@@ -324,15 +325,14 @@ var minPriceElem = document.querySelector('.range__price--min');
 var maxPriceElem = document.querySelector('.range__price--max');
 var toggleCenter = rightToggler.offsetWidth / 2;
 
-
 rangeSliderHandler.addEventListener('mousedown', function (evt) {
   evt.preventDefault();
 
   var slider = {
     startPos: 0,
     endPos: rangeSliderHandler.offsetWidth - toggleCenter,
-    minPin: 0,
-    maxPin: 100
+    minPin: 300,
+    maxPin: 3000
   };
 
   var startXCoords = evt.clientX;
@@ -343,16 +343,18 @@ rangeSliderHandler.addEventListener('mousedown', function (evt) {
     var shift = startXCoords - moveEvt.clientX;
     startXCoords = moveEvt.clientX;
 
-    // fillLine.style.right = ((fillLine.offsetLeft - shift) / slider.endPos * 100) + '%';
-
     if (evt.target.classList.contains('range__btn--right')) {
       evt.target.style.left = calcSliderBound(true, evt.target.offsetLeft - shift) + 'px';
+      fillLine.style.right = slider.endPos - calcSliderBound(true, evt.target.offsetLeft - shift) + 'px';
+      maxPriceElem.textContent = Math.round(calcSliderBound(true, evt.target.offsetLeft - shift) / slider.endPos * slider.maxPin);
 
     } else if (evt.target.classList.contains('range__btn--left')) {
       evt.target.style.left = calcSliderBound(false, evt.target.offsetLeft - shift) + 'px';
+      fillLine.style.left = calcSliderBound(false, fillLine.offsetLeft - shift) + 'px';
+      minPriceElem.textContent = Math.round(calcSliderBound(false, evt.target.offsetLeft - shift) / slider.endPos * slider.maxPin);
     }
   };
-
+  // определение минимальных и макс значений ползунков
   var calcSliderBound = function (isRight, newCoordinate) {
     var rightTogglerX = rightToggler.offsetLeft;
     var leftTogglerX = leftToggler.offsetLeft;
