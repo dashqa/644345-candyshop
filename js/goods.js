@@ -301,47 +301,21 @@ var renderBasket = function () {
   return goodsWrapperElem.appendChild(cardOrderFragment);
 };
 
-// перебирает все инпуты, входищие в блок, отключает или включает их
-var disableInputs = function (wrapper) {
-  var inputs = wrapper.querySelectorAll('input');
-  inputs.forEach(function (item) {
-    if (item.disabled) {
-      item.disabled = false;
-    } else {
-      item.disabled = true;
-    }
-  });
-};
-
 // смена способа доставки
 var changeDeliveryMethod = function () {
   var toggleBtnElem = document.querySelector('.deliver__toggle');
   var deliveryStoreWrap = document.querySelector('.deliver__store');
   var deliveryCourierWrap = document.querySelector('.deliver__courier');
 
-  toggleBtnElem.addEventListener('change', function () {
-    onToggleBtnElemChange('deliver__courier', 'deliver__store', deliveryStoreWrap, deliveryCourierWrap);
-  });
-
-  // toggleBtnElem.addEventListener('change', function (evt) {
-  //   if (evt.target.id === 'deliver__courier' ||
-  //     evt.target.id === 'deliver__store') {
-  //     deliveryStoreWrap.classList.toggle('visually-hidden');
-  //     deliveryCourierWrap.classList.toggle('visually-hidden');
-  //     disableInputs(deliveryStoreWrap);
-  //     disableInputs(deliveryCourierWrap);
-  //   }
-  // });
-
-  var onToggleBtnElemChange = function (targetId1, targetId2, wrapper1, wrapper2) {
-    if (toggleBtnElem === targetId1 ||
-      toggleBtnElem === targetId2) {
-      wrapper1.classList.toggle('visually-hidden');
-      wrapper2.classList.toggle('visually-hidden');
-      disableInputs(wrapper1);
-      disableInputs(wrapper2);
+  toggleBtnElem.addEventListener('change', function (evt) {
+    if (evt.target.id === 'deliver__courier' ||
+      evt.target.id === 'deliver__store') {
+      deliveryStoreWrap.classList.toggle('visually-hidden');
+      deliveryCourierWrap.classList.toggle('visually-hidden');
+      disableInputs(deliveryStoreWrap);
+      disableInputs(deliveryCourierWrap);
     }
-  };
+  });
 };
 
 changeDeliveryMethod();
@@ -363,6 +337,19 @@ var changePaymentMethod = function () {
   });
 };
 
+changePaymentMethod();
+
+// перебирает все инпуты, входищие в блок, отключает или включает их
+var disableInputs = function (wrapper) {
+  var inputs = wrapper.querySelectorAll('input');
+  inputs.forEach(function (item) {
+    if (item.disabled) {
+      item.disabled = false;
+    } else {
+      item.disabled = true;
+    }
+  });
+};
 
 // var disableInputs = function (wrapper) {
 //   var inputs = wrapper.querySelectorAll('input');
@@ -372,7 +359,6 @@ var changePaymentMethod = function () {
 //   });
 // };
 
-changePaymentMethod();
 
 // ползунок фильтра по цене
 var rangeSliderHandler = document.querySelector('.range__filter');
