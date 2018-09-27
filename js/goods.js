@@ -301,6 +301,29 @@ var renderBasket = function () {
   return goodsWrapperElem.appendChild(cardOrderFragment);
 };
 
+
+// перебирает все инпуты, входищие в блок, отключает или включает их
+var disableInputs = function (wrapper) {
+  var inputs = wrapper.querySelectorAll('input');
+  inputs.forEach(function (item) {
+    if (item.disabled) {
+      item.disabled = false;
+    } else {
+      item.disabled = true;
+    }
+  });
+};
+
+/* TODO: выяснить, как реализовать
+var disableInputs = function (wrapper) {
+  var inputs = wrapper.querySelectorAll('input');
+  item.disabled = false;
+  inputs.forEach(function (item) {
+    item.disabled = !item.disabled;
+  });
+};
+ */
+
 // смена способа доставки
 var changeDeliveryMethod = function () {
   var toggleBtnElem = document.querySelector('.deliver__toggle');
@@ -316,10 +339,24 @@ var changeDeliveryMethod = function () {
       disableInputs(deliveryCourierWrap);
     }
   });
+
+  /* TODO: узнать, почему не работает
+  toggleBtnElem.addEventListener('change', function () {
+    onToggleBtnElemChange(toggleBtnElem, 'deliver__store', 'deliver__courier', deliveryStoreWrap, deliveryCourierWrap);
+  });
+
+  var onToggleBtnElemChange = function (toggleBtn, targetID1, targetID2, inputWrapper1, inputWrapper2) {
+    if (toggleBtn.id === targetID1 ||
+      toggleBtn.id === targetID2) {
+      inputWrapper1.classList.toggle('visually-hidden');
+      inputWrapper2.classList.toggle('visually-hidden');
+      disableInputs(inputWrapper1); // не проваливается в эту функцию
+      disableInputs(inputWrapper2);
+    }
+  }; */
 };
 
 changeDeliveryMethod();
-
 
 // смена способа оплаты
 var changePaymentMethod = function () {
@@ -338,27 +375,6 @@ var changePaymentMethod = function () {
 };
 
 changePaymentMethod();
-
-// перебирает все инпуты, входищие в блок, отключает или включает их
-var disableInputs = function (wrapper) {
-  var inputs = wrapper.querySelectorAll('input');
-  inputs.forEach(function (item) {
-    if (item.disabled) {
-      item.disabled = false;
-    } else {
-      item.disabled = true;
-    }
-  });
-};
-
-// var disableInputs = function (wrapper) {
-//   var inputs = wrapper.querySelectorAll('input');
-//   item.disabled = false;
-//   inputs.forEach(function (item) {
-//     item.disabled = !item.disabled;
-//   });
-// };
-
 
 // ползунок фильтра по цене
 var rangeSliderHandler = document.querySelector('.range__filter');
