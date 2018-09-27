@@ -4,7 +4,6 @@ var GOOD_NAMES = ['Чесночные сливки', 'Огуречный пед�
 var GOOD_PICTURES = ['gum-cedar.jpg', 'gum-chile.jpg', 'gum-eggplant.jpg', 'gum-mustard.jpg', 'gum-portwine.jpg', 'gum-wasabi.jpg', 'ice-cucumber.jpg', 'ice-eggplant.jpg', 'ice-garlic.jpg', 'ice-italian.jpg', 'ice-mushroom.jpg', 'ice-pig.jpg', 'marmalade-beer.jpg', 'marmalade-caviar.jpg', 'marmalade-corn.jpg', 'marmalade-new-year.jpg', 'marmalade-sour.jpg', 'marshmallow-bacon.jpg', 'marshmallow-beer.jpg', 'marshmallow-shrimp.jpg', 'marshmallow-spicy.jpg', 'marshmallow-wine.jpg', 'soda-bacon.jpg', 'soda-celery.jpg', 'soda-cob.jpg', 'soda-garlic.jpg', 'soda-peanut-grapes.jpg', 'soda-russian.jpg'];
 var GOOD_CONTENTS = ['молоко', 'сливки', 'вода', 'пищевой краситель', 'патока', 'ароматизатор бекона', 'ароматизатор свинца', 'ароматизатор дуба, идентичный натуральному', 'ароматизатор картофеля', 'лимонная кислота', 'загуститель', 'эмульгатор', 'консервант: сорбат калия', 'посолочная смесь: соль, нитрит натрия', 'ксилит', 'карбамид', 'вилларибо', 'виллабаджо'];
 var GOODS_AMOUNT = 26;
-// var GOODS_FOR_ORDER = 3;
 var PICTURE_PATH = 'img/cards/';
 
 
@@ -98,6 +97,7 @@ var addCardElems = function () {
       evt.target.blur();
       evt.target.classList.toggle('card__btn-favorite--selected');
     });
+
     var cardImgElem = cardElem.querySelector('.card__img');
     cardImgElem.src = good.picture;
     cardImgElem.alt = good.name;
@@ -201,7 +201,7 @@ var renderBasket = function () {
     var orderElem = cardOrderElemTemplate.cloneNode(true);
     orderElem.querySelector('.card-order__title').textContent = good.name;
     orderElem.querySelector('.card-order__price').textContent = good.price + ' ₽';
-    orderElem.querySelector('.card-order__count').setAttribute('value', good.orderedAmount);
+    orderElem.querySelector('.card-order__count').value = good.orderedAmount;
     var cardOrderImgElem = orderElem.querySelector('.card-order__img');
     cardOrderImgElem.src = good.picture;
     cardOrderImgElem.alt = good.name;
@@ -222,7 +222,7 @@ var renderBasket = function () {
 
       // событие при нажатии на увеличение/уменьшение кол-ва товара
       var onChangeAmountButtonClick = function () {
-        orderElem.querySelector('.card-order__count').setAttribute('value', good.orderedAmount);
+        orderElem.querySelector('.card-order__count').value = good.orderedAmount;
         displayOutOfStockElem(window.currentGoodAmount);
         renderTotalOrderElem();
       };
@@ -301,22 +301,78 @@ var renderBasket = function () {
   return goodsWrapperElem.appendChild(cardOrderFragment);
 };
 
+// перебирает все инпуты, входищие в блок, отключает или включает их
+var disableInputs = function (wrapper) {
+  var inputs = wrapper.querySelectorAll('input');
+  inputs.forEach(function (item) {
+    if (item.disabled) {
+      item.disabled = false;
+    } else {
+      item.disabled = true;
+    }
+  });
+};
+
 // смена способа доставки
 var changeDeliveryMethod = function () {
   var toggleBtnElem = document.querySelector('.deliver__toggle');
   var deliveryStoreWrap = document.querySelector('.deliver__store');
   var deliveryCourierWrap = document.querySelector('.deliver__courier');
 
+  toggleBtnElem.addEventListener('change', function () {
+    onToggleBtnElemChange('deliver__courier', 'deliver__store', deliveryStoreWrap, deliveryCourierWrap);
+  });
+
+  // toggleBtnElem.addEventListener('change', function (evt) {
+  //   if (evt.target.id === 'deliver__courier' ||
+  //     evt.target.id === 'deliver__store') {
+  //     deliveryStoreWrap.classList.toggle('visually-hidden');
+  //     deliveryCourierWrap.classList.toggle('visually-hidden');
+  //     disableInputs(deliveryStoreWrap);
+  //     disableInputs(deliveryCourierWrap);
+  //   }
+  // });
+
+  var onToggleBtnElemChange = function (targetId1, targetId2, wrapper1, wrapper2) {
+    if (toggleBtnElem === targetId1 ||
+      toggleBtnElem === targetId2) {
+      wrapper1.classList.toggle('visually-hidden');
+      wrapper2.classList.toggle('visually-hidden');
+      disableInputs(wrapper1);
+      disableInputs(wrapper2);
+    }
+  };
+};
+
+changeDeliveryMethod();
+
+
+// смена способа оплаты
+var changePaymentMethod = function () {
+  var toggleBtnElem = document.querySelector('.payment__method');
+  var cashPaymentWrap = document.querySelector('.payment__cash-wrap');
+  var cardPaymentWrap = document.querySelector('.payment__card-wrap');
+
   toggleBtnElem.addEventListener('change', function (evt) {
-    if (evt.target.id === 'deliver__courier' ||
-      evt.target.id === 'deliver__store') {
-      deliveryStoreWrap.classList.toggle('visually-hidden');
-      deliveryCourierWrap.classList.toggle('visually-hidden');
+    if (evt.target.id === 'payment__card' ||
+      evt.target.id === 'payment__cash') {
+      cashPaymentWrap.classList.toggle('visually-hidden');
+      cardPaymentWrap.classList.toggle('visually-hidden');
+      disableInputs(cardPaymentWrap);
     }
   });
 };
 
-changeDeliveryMethod();
+
+// var disableInputs = function (wrapper) {
+//   var inputs = wrapper.querySelectorAll('input');
+//   item.disabled = false;
+//   inputs.forEach(function (item) {
+//     item.disabled = !item.disabled;
+//   });
+// };
+
+changePaymentMethod();
 
 // ползунок фильтра по цене
 var rangeSliderHandler = document.querySelector('.range__filter');
@@ -356,6 +412,7 @@ rangeSliderHandler.addEventListener('mousedown', function (evt) {
       minPriceElem.textContent = Math.round(calcSliderBound(false, evt.target.offsetLeft - shift) / slider.endPos * slider.maxPin);
     }
   };
+
   // определение минимальных и макс значений ползунков
   var calcSliderBound = function (isRight, newCoordinate) {
     var rightTogglerX = rightToggler.offsetLeft;
@@ -387,3 +444,61 @@ rangeSliderHandler.addEventListener('mousedown', function (evt) {
   document.addEventListener('mouseup', onMouseUp);
 
 });
+
+// валидация полей ввода
+var cardNumberElem = document.querySelector('#payment__card-number');
+var cardExpiresElem = document.querySelector('#payment__card-date');
+var cardCvcElem = document.querySelector('#payment__card-cvc');
+var holderName = document.querySelector('#payment__cardholder');
+
+var onInputFocus = function (input, text) {
+  input.addEventListener('input', function () {
+    validateOnInput(input, text);
+    changeCardStatus();
+  });
+};
+
+var validateOnInput = function (input, text) {
+  if (input.validity.patternMismatch) {
+    input.setCustomValidity(text);
+    input.classList.remove('text-input--correct');
+    input.classList.add('text-input--error');
+  } else {
+    input.setCustomValidity('');
+    input.classList.remove('text-input--error');
+    input.classList.add('text-input--correct');
+  }
+};
+
+cardNumberElem.addEventListener('focus', onInputFocus(cardNumberElem, 'Введите 16 цифр карты без пробелов'));
+cardExpiresElem.addEventListener('focus', onInputFocus(cardExpiresElem, 'Введите дату в формате "мм/гг"'));
+cardCvcElem.addEventListener('focus', onInputFocus(cardCvcElem, 'Три цифры с задней стороны вашей карты'));
+holderName.addEventListener('focus', onInputFocus(holderName, 'Вводите только латинские буквы'));
+
+var luhnAlgorithm = function () {
+  var array = cardNumberElem.value.split('');
+  var sum = 0;
+  array.toString();
+  for (var i = 0; i < array.length; i++) {
+    var parsedNum = parseInt(array[i], 10);
+    if (i % 2 === 0) {
+      var increased = parsedNum *= 2;
+      parsedNum = (increased > 9) ? increased -= 9 : increased;
+    }
+    sum += parsedNum;
+  }
+  return (sum % 10) === 0;
+};
+
+var cardStatus = document.querySelector('.payment__card-status');
+// var cardErrorMsg = document.querySelector('.payment__error-message');
+
+var changeCardStatus = function () {
+  if (luhnAlgorithm() === true && cardExpiresElem.validity.valid && cardCvcElem.validity.valid && holderName.validity.valid) {
+    cardStatus.textContent = 'Одобрен';
+    return true;
+  } else {
+    cardStatus.textContent = 'Не определен';
+    return false;
+  }
+};
