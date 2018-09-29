@@ -991,6 +991,11 @@ body {
   display: flex;
   justify-content: space-between;
 }
+.payment__card-fieldset {
+  padding: 0;
+  margin: 0;
+  border: none;
+}
 .payment__card-group {
   width: 460px;
   display: flex;
@@ -1289,6 +1294,7 @@ body {
   padding: 0;
   font-size: 0;
   border-radius: 50%;
+  z-index: 5;
 }
 .range__btn--left {
   left: 15%;
