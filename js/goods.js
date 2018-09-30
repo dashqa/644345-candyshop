@@ -381,7 +381,7 @@ rangeSliderHandler.addEventListener('mousedown', function (evt) {
     startPos: 0,
     endPos: rangeSliderHandler.offsetWidth - toggleCenter,
     minPin: 0,
-    maxPin: 1000
+    maxPin: 500
   };
 
   var startXCoords = evt.clientX;
