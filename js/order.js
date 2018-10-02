@@ -15,7 +15,7 @@
     toggleBtnElem.addEventListener('change', function (evt) {
       onToggleBtnElemChange(evt.target, STORE, COURIER, Delivery);
     });
-  }(changeDeliveryMethod);
+  };
 
   // смена способа оплаты
   var changePaymentMethod = function () {
@@ -31,7 +31,7 @@
     toggleBtnElem.addEventListener('change', function (evt) {
       onToggleBtnElemChange(evt.target, CARD, CASH, Payment);
     });
-  }(changePaymentMethod);
+  };
 
   // функция для обработчика change
   var onToggleBtnElemChange = function (target, method1, method2, methodsObj) {
@@ -93,6 +93,9 @@
         cardStatus.textContent = 'Не определен';
       }
     };
+  };
 
-  }(toPassInputsValidation);
+  changeDeliveryMethod();
+  changePaymentMethod();
+  toPassInputsValidation();
 })();
