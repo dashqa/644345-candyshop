@@ -3,6 +3,8 @@
 (function () {
   var cardElemTemplate = document.querySelector('#card').content.querySelector('.catalog__card');
   var catalogCardsElem = document.querySelector('.catalog__cards');
+  var catalogLoadStubElem = catalogCardsElem.querySelector('.catalog__load');
+  var goodsArray = [];
 
   // рендеринг одной карточки товара
   var renderCard = function (good) {
@@ -25,7 +27,7 @@
     });
 
     var cardImgElem = cardElem.querySelector('.card__img');
-    cardImgElem.src = good.picture;
+    cardImgElem.src = window.utils.PICTURE_PATH + good.picture;
     cardImgElem.alt = good.name;
 
 
@@ -47,23 +49,29 @@
     return cardElem;
   };
 
-  window.catalog = {
+  // добавляет карточки с товарами на страницу
+  var addCardElems = function () {
+    var onSuccessLoad = function (goods) {
+      catalogCardsElem.classList.remove('catalog__cards--load');
+      catalogLoadStubElem.classList.add('visually-hidden');
 
-    // добавляет карточки с товарами на страницу
-    addCardElems: function () {
-      if (catalogCardsElem.classList.contains('catalog__cards--load')) {
-        catalogCardsElem.classList.remove('catalog__cards--load');
-        catalogCardsElem.children[0].classList.add('visually-hidden');
-      }
+      goodsArray = goods;
 
       var cardFragment = document.createDocumentFragment();
-      for (var i = 0; i < window.data.goods.length; i++) {
-        cardFragment.appendChild(renderCard(window.data.goods[i]));
+      for (var i = 0; i < goods.length; i++) {
+        cardFragment.appendChild(renderCard(goods[i]));
       }
 
       return catalogCardsElem.appendChild(cardFragment);
-    }
+    };
+
+    window.backend.load(onSuccessLoad, window.backend.onErrorUpload);
+  };
+  addCardElems();
+
+  window.catalog = {
+    goods: goodsArray
   };
 
-  window.catalog.addCardElems();
+
 })();

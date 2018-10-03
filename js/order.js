@@ -52,7 +52,6 @@
     }
   };
 
-
   // валидация полей ввода
   var toPassInputsValidation = function () {
     var cardNumberElem = document.querySelector('#payment__card-number');
@@ -95,7 +94,33 @@
     };
   };
 
+  // отправка формы заказа
+  var submitForm = function () {
+    var formElem = document.querySelector('#order-form');
+
+    // очистка всех полей
+    var cleanAllInputs = function () {
+      var dirtyInputs = formElem.querySelectorAll('input');
+      dirtyInputs.forEach(function (input) {
+        input.value = '';
+      });
+    };
+
+    var onSuccessUpload = function () {
+      window.backend.displayModal(true);
+      cleanAllInputs();
+    };
+
+    // обработчик отправки формы
+    formElem.addEventListener('submit', function (evt) {
+      evt.preventDefault();
+      window.backend.upload(new FormData(formElem), onSuccessUpload, window.backend.onErrorUpload);
+    });
+  };
+
+
   changeDeliveryMethod();
   changePaymentMethod();
   toPassInputsValidation();
+  submitForm();
 })();
