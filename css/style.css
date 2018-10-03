@@ -991,7 +991,8 @@ body {
   display: flex;
   justify-content: space-between;
 }
-.payment__card-fieldset {
+.payment__card-fieldset,
+.contact-data-fieldset {
   padding: 0;
   margin: 0;
   border: none;

@@ -64,15 +64,16 @@
   // рендеринг одной карточки в корзине
   var renderCardOrder = function (good) {
     var orderElem = cardOrderElemTemplate.cloneNode(true);
+    var cardOrderImgElem = orderElem.querySelector('.card-order__img');
+    var cardOrderCountElem = orderElem.querySelector('.card-order__count');
+    var cardOrderAmountElem = orderElem.querySelector('.card-order__amount');
 
     orderElem.querySelector('.card-order__title').textContent = good.name;
     orderElem.querySelector('.card-order__price').textContent = good.price + ' ₽';
-    orderElem.querySelector('.card-order__count').value = good.orderedAmount;
-    var cardOrderImgElem = orderElem.querySelector('.card-order__img');
     cardOrderImgElem.src = window.utils.PICTURE_PATH + good.picture;
     cardOrderImgElem.alt = good.name;
-
-    var cardOrderAmountElem = orderElem.querySelector('.card-order__amount');
+    cardOrderCountElem.value = good.orderedAmount;
+    cardOrderCountElem.name = good.name;
 
     // обработчик кнопки добавления/удаления кол-ва товара в корзине
     cardOrderAmountElem.addEventListener('click', function (evt) {

@@ -1,6 +1,14 @@
 'use strict';
 
 (function () {
+
+  /* var hideAllFieldsets = function () {
+    if (window.basket.basketGoods < 1) {
+      var formElem = document.querySelector('#order-form');
+      disableFieldset(formElem);
+    }
+  }; */
+
   // смена способа доставки
   var changeDeliveryMethod = function () {
     var toggleBtnElem = document.querySelector('.deliver__toggle');
@@ -118,7 +126,7 @@
     });
   };
 
-
+  // hideAllFieldsets();
   changeDeliveryMethod();
   changePaymentMethod();
   toPassInputsValidation();
