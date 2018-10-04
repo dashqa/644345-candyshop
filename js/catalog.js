@@ -77,7 +77,7 @@
       return catalogCardsElem.appendChild(cardFragment);
     };
 
-    window.backend.load(onSuccessLoad, window.backend.onErrorUpload);
+    window.backend.load(onSuccessLoad, window.error.onErrorUpload);
   };
   addCardElems();
 
