@@ -106,9 +106,17 @@
   var submitForm = function () {
     var formElem = document.querySelector('#order-form');
 
+    // очистка всех полей
+    var cleanAllInputs = function () {
+      var dirtyInputs = formElem.querySelectorAll('input');
+      dirtyInputs.forEach(function (input) {
+        input.value = '';
+      });
+    };
+
     var onSuccessUpload = function () {
       window.backend.displayModal(true);
-      formElem.reset();
+      cleanAllInputs();
     };
 
     // обработчик отправки формы
