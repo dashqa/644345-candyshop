@@ -4,7 +4,7 @@
   var Url = {
     POST: 'https://js.dump.academy/candyshop',
     GET: 'https://js.dump.academy/candyshop/data'
-  }
+  };
 
   var TIMEOUT = 10000;
 
