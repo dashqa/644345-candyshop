@@ -94,7 +94,7 @@
     // смена статуса карты
     var cardStatus = document.querySelector('.payment__card-status');
     var changeCardStatus = function () {
-      if (window.utils.luhnAlgorithm(cardNumberElem) === true && cardNumberElem.validity.valid && cardExpiresElem.validity.valid && cardCvcElem.validity.valid && holderName.validity.valid) {
+      if (window.utils.checkByluhnAlgorithm(cardNumberElem) === true && cardNumberElem.validity.valid && cardExpiresElem.validity.valid && cardCvcElem.validity.valid && holderName.validity.valid) {
         cardStatus.textContent = 'Одобрен';
       } else {
         cardStatus.textContent = 'Не определен';

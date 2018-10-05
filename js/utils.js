@@ -21,7 +21,7 @@
     },
 
     // алгоритм Луна
-    luhnAlgorithm: function (cardNumber) {
+    checkByluhnAlgorithm: function (cardNumber) {
       var array = cardNumber.value.split('');
       var sum = 0;
       array.toString();

@@ -142,13 +142,14 @@
       goodsTotalElem.classList.remove('visually-hidden');
     }
 
-    var cardOrderFragment = document.createDocumentFragment();
-    for (var j = 0; j < basketGoods.length; j++) {
-      cardOrderFragment.appendChild(renderCardOrder(basketGoods[j]));
-    }
-
     renderTotalOrderElem();
     goodsWrapperElem.innerHTML = '';
+
+    var cardOrderFragment = document.createDocumentFragment();
+
+    basketGoods.forEach(function (good) {
+      cardOrderFragment.appendChild(renderCardOrder(good));
+    });
     return goodsWrapperElem.appendChild(cardOrderFragment);
   };
 

@@ -51,7 +51,6 @@
     xhr.open(method, url);
 
     xhr.send(data || null);
-    return xhr;
   };
 
 

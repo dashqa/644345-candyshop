@@ -66,9 +66,9 @@
       goodsArray = goods;
 
       var cardFragment = document.createDocumentFragment();
-      for (var i = 0; i < goods.length; i++) {
-        cardFragment.appendChild(renderCard(goods[i]));
-      }
+      goods.forEach(function (good) {
+        cardFragment.appendChild(renderCard(good));
+      });
 
       window.catalog = {
         goods: goodsArray

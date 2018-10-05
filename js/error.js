@@ -12,7 +12,7 @@
     SERVICE_UNAVAIL: 503
   };
 
-  var PossibleErrors = [{
+  var possibleErrorsMap = [{
     status: Code.BAD_REQUEST,
     text: 'Неверный запрос'
   },
@@ -59,7 +59,7 @@
     var findByStatus = function (obj) {
       return obj.status === status;
     };
-    var error = PossibleErrors.find(findByStatus);
+    var error = possibleErrorsMap.find(findByStatus);
     if (error) {
       return error.text;
     }
