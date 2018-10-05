@@ -58,27 +58,34 @@
     return cardElem;
   };
 
-  // добавляет карточки с товарами на страницу
-  var addCardElems = function () {
-    var onSuccessLoad = function (goods) {
-      catalogCardsElem.classList.remove('catalog__cards--load');
-      catalogLoadStubElem.classList.add('visually-hidden');
-      goodsArray = goods;
+  // рендеринг всех карточек
+  var addCardElems = function (goods) {
+    catalogCardsElem.classList.remove('catalog__cards--load');
+    catalogLoadStubElem.classList.add('visually-hidden');
 
-      var cardFragment = document.createDocumentFragment();
-      goods.forEach(function (good) {
-        cardFragment.appendChild(renderCard(good));
-      });
+    var cardFragment = document.createDocumentFragment();
 
-      window.catalog = {
-        goods: goodsArray
-      };
-
-      return catalogCardsElem.appendChild(cardFragment);
-    };
-
-    window.backend.load(onSuccessLoad, window.error.onErrorUpload);
+    goods.forEach(function (good) {
+      cardFragment.appendChild(renderCard(good));
+    });
+    return catalogCardsElem.appendChild(cardFragment);
   };
-  addCardElems();
+
+  // в случае удачной загрузки данных с сервера
+  var onSuccessLoad = function (data) {
+    goodsArray = data;
+    addCardElems(goodsArray);
+
+    // window.catalog = {
+    //   goods: goodsArray
+    // };
+  };
+
+  window.backend.load(onSuccessLoad, window.error.onErrorUpload);
+
+  window.catalog = {
+    addCardElems: addCardElems,
+    goods: goodsArray
+  };
 
 })();

@@ -1,6 +1,21 @@
 'use strict';
 
 (function () {
+  // массив со всеми ценами
+  var prices = window.catalog.goods.map(function (good) {
+    return good.price;
+  });
+
+  // поиск мин и макс значения цены
+  var findMinAndMaxPrice = function (goods, isMax) {
+    var pricesCopy = prices.slice();
+    pricesCopy.sort(function (first, second) {
+      return first - second;
+    });
+
+    return isMax ? pricesCopy.pop() : pricesCopy.shift();
+  };
+
   // ползунок фильтра по цене
   var LEFT = 'left';
   var RIGHT = 'right';
@@ -24,8 +39,8 @@
     var slider = {
       startPos: 0,
       endPos: rangeSliderHandler.offsetWidth - toggleCenter,
-      minPin: 0,
-      maxPin: 500
+      minPin: findMinAndMaxPrice(window.catalog.goods, false),
+      maxPin: findMinAndMaxPrice(window.catalog.goods, true)
     };
 
     var startXCoords = evt.clientX;
