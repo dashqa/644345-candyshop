@@ -3,6 +3,9 @@
 (function () {
   var cardElemTemplate = document.querySelector('#card').content.querySelector('.catalog__card');
   var catalogCardsElem = document.querySelector('.catalog__cards');
+  var catalogLoadStubElem = catalogCardsElem.querySelector('.catalog__load');
+  var goodsArray = []; // массив всех товаров
+
 
   // рендеринг одной карточки товара
   var renderCard = function (good) {
@@ -24,8 +27,16 @@
       evt.target.classList.toggle('card__btn-favorite--selected');
     });
 
+    // обработчик кнопки 'состав'
+    cardElem.querySelector('.card__main').addEventListener('click', function (evt) {
+      if (evt.target.classList.contains('card__btn-composition')) {
+        var cardComposElem = evt.currentTarget.querySelector('.card__composition');
+        cardComposElem.classList.toggle('card__composition--hidden');
+      }
+    });
+
     var cardImgElem = cardElem.querySelector('.card__img');
-    cardImgElem.src = good.picture;
+    cardImgElem.src = window.utils.PICTURE_PATH + good.picture;
     cardImgElem.alt = good.name;
 
 
@@ -47,23 +58,27 @@
     return cardElem;
   };
 
-  window.catalog = {
-
-    // добавляет карточки с товарами на страницу
-    addCardElems: function () {
-      if (catalogCardsElem.classList.contains('catalog__cards--load')) {
-        catalogCardsElem.classList.remove('catalog__cards--load');
-        catalogCardsElem.children[0].classList.add('visually-hidden');
-      }
+  // добавляет карточки с товарами на страницу
+  var addCardElems = function () {
+    var onSuccessLoad = function (goods) {
+      catalogCardsElem.classList.remove('catalog__cards--load');
+      catalogLoadStubElem.classList.add('visually-hidden');
+      goodsArray = goods;
 
       var cardFragment = document.createDocumentFragment();
-      for (var i = 0; i < window.data.goods.length; i++) {
-        cardFragment.appendChild(renderCard(window.data.goods[i]));
-      }
+      goods.forEach(function (good) {
+        cardFragment.appendChild(renderCard(good));
+      });
+
+      window.catalog = {
+        goods: goodsArray
+      };
 
       return catalogCardsElem.appendChild(cardFragment);
-    }
-  };
+    };
 
-  window.catalog.addCardElems();
+    window.backend.load(onSuccessLoad, window.error.onErrorUpload);
+  };
+  addCardElems();
+
 })();

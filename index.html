@@ -144,9 +144,10 @@
     <section class="buy">
       <h2 class="visually-hidden">Оформление покупки</h2>
 
-      <form action="https://js.dump.academy/candyshop"
+      <form action="/"
             type="multipart/form-data"
             method="post"
+            id="order-form"
             >
 
             <section class="goods">
@@ -176,7 +177,7 @@
           <section class="contact-data container">
             <div class="contact-data__inner">
               <h3 class="contact-data__greet">Давай знакомиться</h3>
-
+              <!-- <fieldset class="contact-data-fieldset"> -->
               <ul class="contact-data__inputs">
                 <li class="text-input contact-data__input-wrap">
                   <input type="text" class="text-input__input" name="name" id="contact-data__name" placeholder="Имя" required
@@ -198,6 +199,7 @@
                 </li>
 
               </ul>
+             <!-- </fieldset> -->
               <div class="describe">
                 <p class="describe__text">Привет наш единомышленник по вкусам.</p>
                 <p class="describe__text">Смело заполняй поле с телефоном — не будем надоедать сообщениями. Обещаем ;)</p>
@@ -420,16 +422,15 @@
     </div>
   </footer>
 
-  <section class="modal modal--hidden">
+  <section class="modal modal--error modal--hidden">
     <div class="modal__inner">
       <button class="modal__close" type="button">Закрыть окно</button>
       <h3 class="modal__title">Произошла ошибка!</h3>
-      <p class="modal__message">Код ошибки: 404.</p>
-      <p class="modal__message">Пожалуйста, перезагрузите страницу.</p>
+      <p class="modal__message"></p>
     </div>
   </section>
 
-  <section class="modal modal--hidden">
+  <section class="modal modal--success modal--hidden">
     <div class="modal__inner">
       <button class="modal__close" type="button">Закрыть окно</button>
       <h3 class="modal__title">Данные успешно отправлены!</h3>
@@ -503,6 +504,8 @@
     </div>
   </template>
 <script src="js/utils.js"></script>
+<script src="js/backend.js"></script>
+<script src="js/error.js"></script>
 <script src="js/data.js"></script>
 <script src="js/basket.js"></script>
 <script src="js/catalog.js"></script>

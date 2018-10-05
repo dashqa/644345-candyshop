@@ -2,6 +2,8 @@
 
 (function () {
   window.utils = {
+    PICTURE_PATH: 'img/cards/',
+
     getRandomNum: function (min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     },
@@ -19,7 +21,7 @@
     },
 
     // алгоритм Луна
-    luhnAlgorithm: function (cardNumber) {
+    checkByluhnAlgorithm: function (cardNumber) {
       var array = cardNumber.value.split('');
       var sum = 0;
       array.toString();
