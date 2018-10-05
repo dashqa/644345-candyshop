@@ -25,7 +25,7 @@
     });
   };
 
-  var getXhrRequest = function (method, url, data, onLoad, onError) {
+  var getXhrRequest = function (onLoad, onError) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
@@ -48,9 +48,7 @@
     });
 
     xhr.timeout = TIMEOUT;
-    xhr.open(method, url);
-
-    xhr.send(data || null);
+    return xhr;
   };
 
 
@@ -60,12 +58,16 @@
 
     // выгрузка на сервер
     upload: function (data, onLoad, onError) {
-      getXhrRequest('POST', Url.POST, data, onLoad, onError);
+      var xhr = getXhrRequest(onLoad, onError);
+      xhr.open('POST', Url.POST);
+      xhr.send(data);
     },
 
     // загрузка на сервер
     load: function (onLoad, onError) {
-      getXhrRequest('GET', Url.GET, null, onLoad, onError);
+      var xhr = getXhrRequest(onLoad, onError);
+      xhr.open('GET', Url.GET);
+      xhr.send();
     }
   };
 })();
