@@ -1,12 +1,6 @@
 'use strict';
 
 (function () {
-
-  // var findMinPrice = function (array) {
-  //   var pricesArray = [];
-
-  //   array.price.sort(function ())
-  // };
   // ползунок фильтра по цене
   var LEFT = 'left';
   var RIGHT = 'right';
