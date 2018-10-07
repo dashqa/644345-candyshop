@@ -172,7 +172,8 @@
     };
 
     var totalWithDecline = calcTotal().totalAmount + ' ' + window.utils.declOfNum(calcTotal().totalAmount, ['товар', 'товара', 'товаров']);
-    goodsTotalElem.querySelector('.goods__total-count').textContent = 'Итого за ' + totalWithDecline + ': ' + calcTotal().totalPrice + ' ₽';
+    goodsTotalElem.querySelector('.goods__total-count').childNodes[0].textContent = 'Итого за ' + totalWithDecline + ': ';
+    goodsTotalElem.querySelector('.goods__price').textContent = calcTotal().totalPrice + ' ₽';
     basketElemInHeader.textContent = 'В корзине ' + totalWithDecline;
   };
 

@@ -1,19 +1,133 @@
 'use strict';
 
 (function () {
-  // массив со всеми ценами
-  var prices = window.catalog.goods.map(function (good) {
-    return good.price;
-  });
 
-  // поиск мин и макс значения цены
-  var findMinAndMaxPrice = function (goods, isMax) {
-    var pricesCopy = prices.slice();
-    pricesCopy.sort(function (first, second) {
-      return first - second;
+  var sortType = 'none';
+
+  var GoodKind = {
+    'Мороженое': 'icecream',
+    'Газировка': 'soda',
+    'Жевательная резинка': 'gum',
+    'Мармелад': 'marmalade',
+    'Зефир': 'marshmallow'
+  };
+
+  var updateCatalog = function () {
+    var typeFilteredCards = window.catalog.goods.slice();
+    var filteredCards = typeFilteredCards;
+    var propertyFilteredCards = typeFilteredCards;
+
+    // возвращает массив с объектами, которые имеют конкретный тип
+    var filterByType = function (kinds) {
+      if (!kinds.length) {
+        typeFilteredCards = window.catalog.goods;
+      }
+      typeFilteredCards = window.catalog.goods.filter(function (good) {
+        return kinds.indexOf(GoodKind[good.kind]) !== -1;
+      });
+    };
+
+    var filterByProperty = function (facts) {
+      if (!facts.length) {
+        propertyFilteredCards = typeFilteredCards;
+      }
+      propertyFilteredCards = typeFilteredCards.filter(function (good) {
+        return facts.some(function (fact) {
+          switch (fact) {
+            case 'sugar-free':
+              return !good.nutritionFacts.sugar;
+            case 'vegetarian':
+              return good.nutritionFacts.vegetarian;
+            case 'gluten-free':
+              return !good.nutritionFacts.gluten;
+            default:
+              return false;
+          }
+        });
+      });
+    };
+
+    var filterByMark = function (marks) {
+      return propertyFilteredCards.filter(function (good) {
+        return marks.every(function (mark) {
+          switch (mark) {
+            case 'favorite':
+              return good.favorite;
+            case 'availability':
+              return good.amount > 0;
+            default:
+              return false;
+          }
+        });
+      });
+    };
+
+    var sortByRating = function (key) {
+      filteredCards.sort(function (first, second) {
+        return second.rating[key] - first.rating[key];
+      });
+    };
+
+    var sortBy = function (type) {
+      switch (type) {
+        case 'popular':
+          return sortByRating('number');
+        case 'rating':
+          return sortByRating('value');
+        case 'expensive':
+          return sortByPrice();
+        case 'cheep':
+          return sortByPrice(true);
+        default:
+          return false;
+      }
+    };
+
+    // возвращает массив с объектами, отсортированные по цене
+    var sortByPrice = function (isByMin) {
+      return filteredCards.sort(function (first, second) {
+        return isByMin ? first.price - second.price : second.price - first.price;
+      });
+    };
+
+    var getCheckedValues = function (children) {
+      return Array.from(children).reduce(function (accum, cur) {
+        if (cur.checked) {
+          accum.push(cur.value);
+        }
+        return accum;
+      }, []);
+    };
+
+    var SideBarMap = {
+      'food-type': filterByType,
+      'food-property': filterByProperty,
+      'mark': filterByMark
+    };
+
+    var catalogSidebarElem = document.querySelector('.catalog__sidebar');
+    catalogSidebarElem.addEventListener('change', function (evt) {
+      var name = evt.target.name;
+      var counter = evt.target.parentElement.querySelector('.input-btn__item-count');
+      switch (name) {
+        case 'food-type':
+        case 'food-property':
+        case 'mark':
+          filteredCards = SideBarMap[name](getCheckedValues(document.querySelectorAll('input[name="' + name + '"]')));
+          break;
+
+        case 'sort':
+          sortType = evt.target.value;
+          break;
+      }
+
+      sortBy(sortType);
+
+      if (counter) {
+        // counter.textContent = '(' + filteredCards.length + ')';
+      }
+      window.catalog.addCardElems(filteredCards);
     });
-
-    return isMax ? pricesCopy.pop() : pricesCopy.shift();
   };
 
   // ползунок фильтра по цене
@@ -32,6 +146,18 @@
   Price[RIGHT] = document.querySelector('.range__price--max');
   var toggleCenter = toggle.offsetWidth / 2;
 
+  // поиск мин и макс значения цены
+  var findMinAndMaxPrice = function (isMax) {
+    var prices = window.catalog.goods.map(function (good) {
+      return good.price;
+    });
+    var pricesCopy = prices.slice();
+    pricesCopy.sort(function (first, second) {
+      return first - second;
+    });
+
+    return isMax ? pricesCopy.pop() : pricesCopy.shift();
+  };
 
   rangeSliderHandler.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
@@ -76,4 +202,8 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
+
+  window.filter = {
+    updateCatalog: updateCatalog
+  };
 })();

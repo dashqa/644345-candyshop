@@ -19,12 +19,14 @@
       evt.preventDefault();
       window.basket.addGoodInBasket(good, window.basket.renderBasket); // обработчик кнопки добавить в корзину, добавляет новый товар и перерендеривает страницу
     });
+    good.favorite = false;
 
     // обработчик кнопки избранного
     cardElem.querySelector('.card__btn-favorite').addEventListener('click', function (evt) {
       evt.preventDefault();
       evt.target.blur();
       evt.target.classList.toggle('card__btn-favorite--selected');
+      good.favorite = (evt.target.classList.contains('card__btn-favorite--selected') ? true : false);
     });
 
     // обработчик кнопки 'состав'
@@ -58,10 +60,34 @@
     return cardElem;
   };
 
+  // отображение заглушки в случае слишком строгой фильтрации
+  var displayEmptyFilterStub = function () {
+    var emptyFilterStubElemTemplate = document.querySelector('#empty-filters').content.querySelector('.catalog__empry-filter');
+    var emptyFilterStubElem = emptyFilterStubElemTemplate.cloneNode(true);
+
+    if (catalogCardsElem.length === 0) {
+      catalogCardsElem.appendChild(emptyFilterStubElem);
+    } else {
+      catalogCardsElem.removeChild(emptyFilterStubElem);
+    }
+  };
+
+  // очистка каталога
+  var clearCatalog = function () {
+    var oldCards = catalogCardsElem.querySelectorAll('article');
+    oldCards.forEach(function (card) {
+      card.remove();
+    });
+  };
+
   // рендеринг всех карточек
   var addCardElems = function (goods) {
-    catalogCardsElem.classList.remove('catalog__cards--load');
-    catalogLoadStubElem.classList.add('visually-hidden');
+    if (catalogCardsElem.classList.contains('catalog__cards--load')) {
+      catalogCardsElem.classList.remove('catalog__cards--load');
+      catalogLoadStubElem.classList.add('visually-hidden');
+    }
+
+    clearCatalog();
 
     var cardFragment = document.createDocumentFragment();
 
@@ -76,16 +102,15 @@
     goodsArray = data;
     addCardElems(goodsArray);
 
-    // window.catalog = {
-    //   goods: goodsArray
-    // };
+    window.catalog.goods = goodsArray;
+    window.filter.updateCatalog();
   };
 
   window.backend.load(onSuccessLoad, window.error.onErrorUpload);
 
   window.catalog = {
     addCardElems: addCardElems,
-    goods: goodsArray
+    displayEmptyFilterStub: displayEmptyFilterStub
   };
 
 })();

@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-
   /* var hideAllFieldsets = function () {
     if (window.basket.basketGoods < 1) {
       var formElem = document.querySelector('#order-form');
