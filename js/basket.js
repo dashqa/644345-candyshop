@@ -178,8 +178,10 @@
   };
 
   window.basket = {
+    goodsWrapperElem: goodsWrapperElem,
     basketGoods: basketGoods,
     addGoodInBasket: addGoodInBasket,
     renderBasket: renderBasket,
+    renderTotalOrderElem: renderTotalOrderElem
   };
 })();

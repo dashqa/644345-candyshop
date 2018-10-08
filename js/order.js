@@ -1,6 +1,24 @@
 'use strict';
 
 (function () {
+  var MapImage = {
+    PATH: 'img/map/',
+    EXTENSION: '.jpg'
+  };
+
+  var storeNameToAdress = {
+    academicheskaya: 'проспект Науки, д. 19, корп. 3, литер А, ТК «Платформа», 3-й этаж, секция 310',
+    vasileostrovskaya: 'м. Василеостровская',
+    rechka: 'м.Черная речка',
+    petrogradskaya: 'м.Петроградская',
+    proletarskaya: 'м.Пролетарская',
+    vostaniya: 'м.Площадь Восстания',
+    prosvesheniya: 'м.Проспект Просвещения',
+    frunzenskaya: 'м.Фрунзенская',
+    chernishevskaya: 'м.Чернышевская',
+    tehinstitute: 'м.Технологический институт'
+  };
+
   /* var hideAllFieldsets = function () {
     if (window.basket.basketGoods < 1) {
       var formElem = document.querySelector('#order-form');
@@ -49,6 +67,22 @@
       disableFieldset(methodsObj[method1]);
       disableFieldset(methodsObj[method2]);
     }
+  };
+
+  // смена картинки карты при выборе станции метро
+  var changeMapImage = function () {
+    var deliverStoreListElem = document.querySelector('.deliver__store-list');
+    var mapImageElem = document.querySelector('.deliver__store-map-img');
+    var storeAdressElem = document.querySelector('.deliver__store-describe');
+
+    deliverStoreListElem.addEventListener('change', function (evt) {
+      if (evt.target.name === 'store') {
+        var picture = MapImage.PATH + evt.target.value + MapImage.EXTENSION;
+        mapImageElem.src = picture;
+        mapImageElem.alt = evt.target.value;
+        storeAdressElem.textContent = storeNameToAdress[evt.target.value];
+      }
+    });
   };
 
   // отключает/включает fieldset внутри конкретного враппера
@@ -101,6 +135,12 @@
     };
   };
 
+  var clearBasket = function () {
+    window.catalog.clearCards(window.basket.goodsWrapperElem);
+    window.basket.basketGoods = [];
+    document.querySelector('.goods__total').classList.add('visually-hidden');
+  };
+
   // отправка формы заказа
   var submitForm = function () {
     var formElem = document.querySelector('#order-form');
@@ -116,6 +156,7 @@
     var onSuccessUpload = function () {
       window.backend.displayModal(true);
       cleanAllInputs();
+      clearBasket();
     };
 
     // обработчик отправки формы
@@ -127,6 +168,7 @@
 
   // hideAllFieldsets();
   changeDeliveryMethod();
+  changeMapImage();
   changePaymentMethod();
   toPassInputsValidation();
   submitForm();
