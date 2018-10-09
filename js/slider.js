@@ -69,7 +69,7 @@
         var currentPos = Math.round(newCoord / slider.endPos * slider.maxPin);
       }
 
-      var calcCurrentMinMaxPos = function () {
+      window.slider.calcCurrentMinMaxPos = function () {
         var currentMinPos = slider.minPin;
         var currentMaxPos = slider.maxPin;
         switch (evt.target) {
@@ -80,22 +80,21 @@
             currentMaxPos = currentPos;
             return [currentMinPos, currentMaxPos];
         }
-        window.slider.calcCurrentMinMaxPos = calcCurrentMinMaxPos;
         return false;
       };
     };
 
-    var filterByRangePrice = function (cards) {
+    window.slider.filterByRangePrice = function (cards) {
       return cards.filter(function (card) {
         return card.price >= window.slider.calcCurrentMinMaxPos()[0] && card.price <= window.slider.calcCurrentMinMaxPos()[1];
       });
     };
 
+    window.slider.isMouseUp = false;
+
     var onMouseUp = function (upEvt) {
       upEvt.preventDefault();
-      window.filter.filteredCards = filterByRangePrice(window.catalog.goods || window.filter.filteredCards);
-
-      window.catalog.addCardElems(window.filter.filteredCards);
+      window.slider.isMouseUp = true;
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);

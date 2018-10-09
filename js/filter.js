@@ -209,6 +209,12 @@
         case 'food-property':
           filteredCards = defaultFilter(filteredCards);
           break;
+
+        case 'price':
+          if (window.slider.isMouseUp === true) {
+            filteredCards = window.slider.filterByRangePrice(filteredCards);
+          }
+          break;
       }
 
       sortBy(filteredCards, sortType);
@@ -218,17 +224,16 @@
       window.filter.filteredCards = filteredCards;
 
     });
-
-    // обработчик "показать всё" в фильтрах
-    var filterForm = document.querySelector('#filter-form');
-    filterForm.addEventListener('submit', function (evt) {
-      evt.preventDefault();
-      filterForm.reset();
-      window.filter.filteredCards = window.catalog.goods;
-      window.catalog.addCardElems(window.filter.filteredCards);
-    });
-
   };
+
+  // обработчик "показать всё" в фильтрах
+  var filterFormElem = document.querySelector('#filter-form');
+  filterFormElem.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    filterFormElem.reset();
+    window.filter.filteredCards = window.catalog.goods;
+    window.catalog.addCardElems(window.filter.filteredCards);
+  });
 
   window.filter = {
     updateCatalog: updateCatalog,

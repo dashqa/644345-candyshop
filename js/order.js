@@ -19,12 +19,13 @@
     tehinstitute: 'м.Технологический институт'
   };
 
-  /* var hideAllFieldsets = function () {
-    if (window.basket.basketGoods < 1) {
-      var formElem = document.querySelector('#order-form');
-      disableFieldset(formElem);
-    }
-  }; */
+  var formElem = document.querySelector('#order-form');
+
+  window.order.showOrHideOrderInputs = function () {
+    Array.from(formElem.querySelectorAll('input')).forEach(function (input) {
+      input.disabled = !input.disabled;
+    });
+  };
 
   // смена способа доставки
   var changeDeliveryMethod = function () {
@@ -135,16 +136,15 @@
     };
   };
 
-  var clearBasket = function () {
-    window.catalog.clearCards(window.basket.goodsWrapperElem);
+  var cleanBasket = function () {
+    var basketGoodsWrapper = document.querySelector('.goods__cards');
+    basketGoodsWrapper.innerHTML = '';
     window.basket.basketGoods = [];
-    document.querySelector('.goods__total').classList.add('visually-hidden');
+    window.basket.emptyStub();
   };
 
   // отправка формы заказа
   var submitForm = function () {
-    var formElem = document.querySelector('#order-form');
-
     // очистка всех полей
     var cleanAllInputs = function () {
       var dirtyInputs = formElem.querySelectorAll('input');
@@ -156,7 +156,8 @@
     var onSuccessUpload = function () {
       window.backend.displayModal(true);
       cleanAllInputs();
-      clearBasket();
+      cleanBasket();
+      window.order.showOrHideOrderInputs();
     };
 
     // обработчик отправки формы
@@ -166,7 +167,6 @@
     });
   };
 
-  // hideAllFieldsets();
   changeDeliveryMethod();
   changeMapImage();
   changePaymentMethod();

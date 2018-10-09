@@ -76,22 +76,14 @@
     }
   };
 
-  // очистка карточек
-  var cleanCards = function (wrapper) {
-    var oldCards = wrapper.querySelectorAll('article');
-    oldCards.forEach(function (card) {
-      card.remove();
-    });
-  };
-
   // рендеринг всех карточек
   var addCardElems = function (goods) {
     if (catalogCardsElem.classList.contains('catalog__cards--load')) {
       catalogCardsElem.classList.remove('catalog__cards--load');
       catalogLoadStubElem.classList.add('visually-hidden');
     }
-    cleanCards(catalogCardsElem);
 
+    catalogCardsElem.innerHTML = '';
     var cardFragment = document.createDocumentFragment();
 
     goods.forEach(function (good) {
@@ -108,14 +100,14 @@
 
     window.catalog.goods = goodsArray;
     window.filter.updateCatalog();
+    window.order.showOrHideOrderInputs();
   };
 
   window.backend.load(onSuccessLoad, window.error.onErrorUpload);
 
   window.catalog = {
     addCardElems: addCardElems,
-    displayEmptyFilterStub: displayEmptyFilterStub,
-    cleanCards: cleanCards
+    displayEmptyFilterStub: displayEmptyFilterStub
   };
 
 })();

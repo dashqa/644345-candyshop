@@ -108,16 +108,20 @@
       }
     });
 
+    window.basket.emptyStub = function () {
+      goodsWrapperElem.classList.add('goods__cards--empty');
+      goodsTotalElem.classList.add('visually-hidden');
+      var emptyOrderStub = emptyCardOrderElemTemplate.cloneNode(true);
+      goodsWrapperElem.appendChild(emptyOrderStub);
+    };
+
     // отображение заглушки, если в корзине нет товаров
     var displayEmptyOrderStub = function () {
       if (good.orderedAmount < 1) {
         removeFromBasketArray(good.name);
         orderElem.remove();
         if (basketGoods.length === 0) {
-          goodsWrapperElem.classList.add('goods__cards--empty');
-          goodsTotalElem.classList.add('visually-hidden');
-          var emptyOrderStub = emptyCardOrderElemTemplate.cloneNode(true);
-          goodsWrapperElem.appendChild(emptyOrderStub);
+          window.basket.emptyStub();
         }
       }
     };
@@ -144,6 +148,7 @@
 
     renderTotalOrderElem();
     goodsWrapperElem.innerHTML = '';
+    window.order.showOrHideOrderInputs();
 
     var cardOrderFragment = document.createDocumentFragment();
 
