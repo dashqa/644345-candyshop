@@ -211,7 +211,7 @@
           break;
 
         case 'price':
-          if (window.slider.isMouseUp === true) {
+          if (window.slider.isMouseUp) {
             filteredCards = window.slider.filterByRangePrice(filteredCards);
           }
           break;

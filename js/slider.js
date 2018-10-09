@@ -89,11 +89,14 @@
         });
       };
 
-      window.filterByRangePrice = filterByRangePrice;
+      window.slider.filterByRangePrice = filterByRangePrice;
     };
 
-    // var isMouseUp = false;
-    // window.slider.isMouseUp = isMouseUp;
+    var isMouseUp = false;
+
+    window.slider = {
+      isMouseUp: isMouseUp
+    };
 
     var onMouseUp = function (upEvt) {
       upEvt.preventDefault();
