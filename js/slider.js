@@ -69,7 +69,7 @@
         var currentPos = Math.round(newCoord / slider.endPos * slider.maxPin);
       }
 
-      window.slider.calcCurrentMinMaxPos = function () {
+      var calcCurrentMinMaxPos = function () {
         var currentMinPos = slider.minPin;
         var currentMaxPos = slider.maxPin;
         switch (evt.target) {
@@ -82,15 +82,18 @@
         }
         return false;
       };
+
+      var filterByRangePrice = function (cards) {
+        return cards.filter(function (card) {
+          return card.price >= calcCurrentMinMaxPos()[0] && card.price <= calcCurrentMinMaxPos()[1];
+        });
+      };
+
+      window.filterByRangePrice = filterByRangePrice;
     };
 
-    window.slider.filterByRangePrice = function (cards) {
-      return cards.filter(function (card) {
-        return card.price >= window.slider.calcCurrentMinMaxPos()[0] && card.price <= window.slider.calcCurrentMinMaxPos()[1];
-      });
-    };
-
-    window.slider.isMouseUp = false;
+    // var isMouseUp = false;
+    // window.slider.isMouseUp = isMouseUp;
 
     var onMouseUp = function (upEvt) {
       upEvt.preventDefault();
