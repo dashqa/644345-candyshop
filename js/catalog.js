@@ -77,7 +77,7 @@
   };
 
   // очистка карточек
-  var clearCards = function (wrapper) {
+  var cleanCards = function (wrapper) {
     var oldCards = wrapper.querySelectorAll('article');
     oldCards.forEach(function (card) {
       card.remove();
@@ -90,7 +90,7 @@
       catalogCardsElem.classList.remove('catalog__cards--load');
       catalogLoadStubElem.classList.add('visually-hidden');
     }
-    clearCards(catalogCardsElem);
+    cleanCards(catalogCardsElem);
 
     var cardFragment = document.createDocumentFragment();
 
@@ -104,6 +104,7 @@
   var onSuccessLoad = function (data) {
     goodsArray = data;
     addCardElems(goodsArray);
+    window.filter.setupInitialCounters(goodsArray);
 
     window.catalog.goods = goodsArray;
     window.filter.updateCatalog();
@@ -114,7 +115,7 @@
   window.catalog = {
     addCardElems: addCardElems,
     displayEmptyFilterStub: displayEmptyFilterStub,
-    clearCards: clearCards
+    cleanCards: cleanCards
   };
 
 })();
