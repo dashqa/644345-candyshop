@@ -210,7 +210,7 @@
           filteredCards = defaultFilter(filteredCards);
           break;
 
-        case 'price':
+        case 'range':
           if (window.slider.isMouseUp) {
             filteredCards = window.slider.filterByRangePrice(filteredCards);
           }
