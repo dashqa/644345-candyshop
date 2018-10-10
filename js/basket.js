@@ -138,7 +138,6 @@
     });
 
     window.basket.displayEmptyStub = displayEmptyStub;
-
     return orderElem;
   };
 

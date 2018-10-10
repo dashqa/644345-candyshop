@@ -152,12 +152,6 @@
     var basketGoodsWrapper = document.querySelector('.goods__cards');
     basketGoodsWrapper.innerHTML = '';
     window.basket.displayEmptyStub();
-
-    // обнуляем свойство кол-ва у товаров, которые купили.
-    window.filter.runtimeCards.forEach(function (good) {
-      good.orderedAmount = 0;
-    });
-
     window.basket.goods = [];
   };
 

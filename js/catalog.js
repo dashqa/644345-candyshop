@@ -16,11 +16,19 @@
     cardElem.querySelector('.card__price').childNodes[0].textContent = good.price + ' ';
     cardElem.querySelector('.card__weight').textContent = '/ ' + good.weight + ' Г';
     cardElem.querySelector('.card__btn').addEventListener('click', function (evt) {
+
+      // обработчик кнопки добавить в корзину, добавляет новый товар и перерендеривает страницу
       evt.preventDefault();
-      window.basket.addGoodInBasket(good, window.basket.render); // обработчик кнопки добавить в корзину, добавляет новый товар и перерендеривает страницу
+      window.basket.addGoodInBasket(good, window.basket.render);
     });
+
     if (good.favorite) {
       cardElem.querySelector('.card__btn-favorite').classList.add('card__btn-favorite--selected');
+    }
+
+    if (good.amount <= 5) {
+      cardElem.classList.remove('card--in-stock');
+      cardElem.classList.add('card--' + (good.amount >= 1 ? 'little' : 'soon'));
     }
 
     // обработчик кнопки избранного
@@ -44,11 +52,6 @@
     cardImgElem.src = window.utils.PICTURE_PATH + good.picture;
     cardImgElem.alt = good.name;
 
-
-    if (good.amount <= 5) {
-      cardElem.classList.remove('card--in-stock');
-      cardElem.classList.add('card--' + (good.amount >= 1 ? 'little' : 'soon'));
-    }
 
     var energyCalElem = good.nutritionFacts.energy + ' ккал';
     cardElem.querySelector('.card__characteristic').textContent = (!good.nutritionFacts.sugar ? 'Без сахара. ' : 'Содержит сахар. ') + energyCalElem;
@@ -100,7 +103,6 @@
     window.catalog.goods = goodsArray;
     window.slider.initSLider();
     window.filter.updateCatalog();
-
     window.order.setupSubmition();
   };
 

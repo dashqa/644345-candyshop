@@ -7,7 +7,7 @@
     var rangeSliderHandler = document.querySelector('.range__filter');
     var fillLine = rangeSliderHandler.querySelector('.range__fill-line');
     var toggle = rangeSliderHandler.querySelector('.range__btn');
-    var toggleCenter = toggle.offsetWidth / 2;
+    var toggleWidth = toggle.offsetWidth;
 
     var Toggler = {};
     Toggler[LEFT] = rangeSliderHandler.querySelector('.range__btn--left');
@@ -30,7 +30,7 @@
 
     var slider = {
       startPos: 0,
-      endPos: rangeSliderHandler.offsetWidth - toggleCenter,
+      endPos: rangeSliderHandler.offsetWidth - toggleWidth,
       minPin: findMinAndMaxPrice(window.catalog.goods),
       maxPin: findMinAndMaxPrice(window.catalog.goods, true)
     };
@@ -89,12 +89,6 @@
       var onMouseUp = function (upEvt) {
         upEvt.preventDefault();
 
-        // обновляет значения кол-ва товара по цене
-        var updatePriceCounter = function (cards) {
-          var priceCounter = document.querySelector('.range__count');
-          priceCounter.textContent = '(' + cards.length + ')';
-        };
-
         // обновляет каталог товаров в зависимости от выбранных фильтров
         var updateCatalog = function () {
           window.slider.initialMinPin = window.slider.calcCurrentMinMaxPos()[0];
@@ -103,34 +97,9 @@
           window.filter.runtimeCards = window.filter.filterByPrice(window.slider.initialMinPin, window.slider.initialMaxPin);
           window.catalog.addCardElems(window.filter.runtimeCards);
           window.catalog.displayEmptyFilterStub(window.filter.runtimeCards);
-          updatePriceCounter(window.filter.runtimeCards);
-
-          window.filter.runtimeCards = window.filter.filteredCards;
-
-          // // применяет выбранный массив
-          // var applyPriceFilters = function (cards) {
-          //   cards = window.filter.filterByPrice(window.slider.initialMinPin, window.slider.initialMaxPin);
-          //   window.catalog.addCardElems(cards);
-          //   window.catalog.displayEmptyFilterStub(cards);
-          //   updatePriceCounter(cards);
-          // };
-
-          // // выбирает какой массив карточек взять для фильтрации по цене
-          // var checkWhichArrayToChoose = function () {
-          //   var filtersBlock = document.querySelector('#filters');
-
-          //   var isChecked = Array.from(filtersBlock.querySelectorAll('input')).some(function (input) {
-          //     return input.checked;
-          //   });
-
-          //   if (isChecked) {
-          //     applyPriceFilters(window.filter.filteredCards);
-          //   } else {
-          //     applyPriceFilters(window.filter.runtimeCards);
-          //   }
-          // };
-          // checkWhichArrayToChoose();
+          window.filter.updatePriceCounter(window.filter.runtimeCards);
         };
+
         updateCatalog();
 
         document.removeEventListener('mousemove', onMouseMove);
