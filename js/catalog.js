@@ -5,10 +5,6 @@
   var catalogCardsElem = document.querySelector('.catalog__cards');
   var catalogLoadStubElem = catalogCardsElem.querySelector('.catalog__load');
 
-  var emptyFilterStubElemTemplate = document.querySelector('#empty-filters').content.querySelector('.catalog__empty-filter');
-  var emptyFilterStubElem = emptyFilterStubElemTemplate.cloneNode(true);
-  catalogCardsElem.appendChild(emptyFilterStubElem);
-
   var goodsArray = []; // массив всех товаров
 
   // рендеринг одной карточки товара
@@ -69,10 +65,13 @@
 
   // отображение заглушки в случае слишком строгой фильтрации
   var displayEmptyFilterStub = function (cards) {
+    var emptyFilterStubElemTemplate = document.querySelector('#empty-filters').content.querySelector('.catalog__empty-filter');
+    var emptyFilterStubElem = emptyFilterStubElemTemplate.cloneNode(true);
+
     if (cards.length === 0) {
-      emptyFilterStubElem.classList.remove('visually-hidden');
-    } else {
-      emptyFilterStubElem.classList.add('visually-hidden');
+      catalogCardsElem.appendChild(emptyFilterStubElem);
+    } else if (catalogCardsElem.contains(emptyFilterStubElem)) {
+      catalogCardsElem.removeChild(emptyFilterStubElem);
     }
   };
 
@@ -99,7 +98,7 @@
     window.filter.setupInitialCounters(goodsArray);
 
     window.catalog.goods = goodsArray;
-    window.filter.updateCatalog();
+    window.debounce(window.filter.updateCatalog());
     window.order.showOrHideOrderInputs();
   };
 

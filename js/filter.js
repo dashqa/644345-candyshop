@@ -11,6 +11,7 @@
     'Зефир': 'marshmallow'
   };
 
+  // утсанавливает изначальные значения кол-ва товара у фильтров
   var setupInitialCounters = function (cards) {
     updateMarkCounters(cards);
     updatePropertyCounters(cards);
@@ -24,13 +25,14 @@
     });
   };
 
+  // обновляет значения кол-ва товара у блока с фильтрами Избранное и В наличии
   var updateMarkCounters = function (cards) {
     var foodMark = {
       'favorite': 0,
       'availability': 0
     };
     cards.forEach(function (card) {
-      if (card.favorite === true) {
+      if (card.favorite) {
         foodMark['favorite'] += 1;
       }
       if (card.amount > 0) {
@@ -40,6 +42,7 @@
     writeCounters(foodMark);
   };
 
+  // обновляет значения кол-ва товара у блока с фильтрами по категории
   var updateTypeCounters = function (cards) {
     var foodType = {
       'icecream': 0,
@@ -68,6 +71,7 @@
     writeCounters(foodType);
   };
 
+  // обновляет значения кол-ва товара у блока с фильтрами по составу
   var updatePropertyCounters = function (cards) {
     var foodProperty = {
       'sugar-free': 0,
@@ -88,7 +92,9 @@
     writeCounters(foodProperty);
   };
 
+  // обновляет каталог товаров в зависимости от выбранные фильтров
   var updateCatalog = function () {
+
     // сброс чекнутых инпутов
     var setDefaultParams = function () {
       Array.from(document.querySelectorAll('input[name="food-type"], input[name="food-property"]')).forEach(function (elem) {
@@ -96,7 +102,7 @@
       });
     };
 
-    // возвращает массив с объектами, которые имеют конкретный тип
+    // возвращает массив с объектами, которые имеют конкретную категорию
     var filterByKind = function (cards, kinds) {
       if (!kinds.length) {
         return cards;
@@ -106,6 +112,7 @@
       });
     };
 
+    // возвращает массив с объектами, которые имеют конкретные характеристики товара (по составу)
     var filterByNutritionFacts = function (cards, facts) {
       if (!facts.length) {
         return cards;
@@ -126,6 +133,7 @@
       });
     };
 
+    // возвращает массив с объектами, которые имеют конкретные характеристики товара (избранное и в наличии)
     var filterByMark = function (mark) {
       setDefaultParams();
       return window.catalog.goods.filter(function (good) {
@@ -142,6 +150,7 @@
       });
     };
 
+    // сотрировка по рейтингу
     var sortByRating = function (cards) {
       cards.sort(function (first, second) {
         if (second.rating.value !== first.rating.value) {
@@ -151,6 +160,7 @@
       });
     };
 
+    // сортировка товаров
     var sortBy = function (cards, type) {
       switch (type) {
         case 'popular':
@@ -166,13 +176,14 @@
       }
     };
 
-    // возвращает массив с объектами, отсортированные по цене
+    // возвращает массив объектов, отсортированные по цене
     var sortByPrice = function (cards, isByMin) {
       return cards.sort(function (first, second) {
         return isByMin ? first.price - second.price : second.price - first.price;
       });
     };
 
+    // возвращает массив объектов, у которых выбран чекбаттон
     var getCheckedValues = function (children) {
       return Array.from(children).reduce(function (accum, cur) {
         if (cur.checked) {
@@ -182,11 +193,25 @@
       }, []);
     };
 
+    // возвращает массив отсортированных карточек по категории и составу
     var defaultFilter = function (cards) {
       var result = filterByKind(cards, getCheckedValues(document.querySelectorAll('input[name="food-type"]')));
       return filterByNutritionFacts(result, getCheckedValues(document.querySelectorAll('input[name="food-property"]')));
     };
 
+    var runtimeCards = window.catalog.goods.slice();
+
+    // возвращает массив объектов, отсортированные по цене
+    var filterByPrice = function (min, max) {
+      return runtimeCards.filter(function (card) {
+        return card.price >= min && card.price <= max;
+      });
+    };
+
+    window.filter.filterByPrice = filterByPrice;
+    window.filter.runtimeCards = runtimeCards;
+
+    // обработчик изменений инпутов внутри блока с фильтрами
     var catalogSidebarElem = document.querySelector('.catalog__sidebar');
     catalogSidebarElem.addEventListener('change', function (evt) {
       var filteredCards = window.catalog.goods.slice();
@@ -209,20 +234,15 @@
         case 'food-property':
           filteredCards = defaultFilter(filteredCards);
           break;
-
-        case 'range':
-          if (window.slider.isMouseUp) {
-            filteredCards = window.slider.filterByRangePrice(filteredCards);
-          }
-          break;
       }
 
-      sortBy(filteredCards, sortType);
-      window.catalog.addCardElems(filteredCards);
+      runtimeCards = filteredCards;
+
+      sortBy(runtimeCards, sortType);
+      runtimeCards = window.filter.filterByPrice(window.slider.calcCurrentMinMaxPos()[0], window.slider.calcCurrentMinMaxPos()[1]);
+      window.catalog.addCardElems(runtimeCards);
       window.catalog.displayEmptyFilterStub(filteredCards);
-
       window.filter.filteredCards = filteredCards;
-
     });
   };
 

@@ -25,7 +25,7 @@
 
       <aside class="catalog__sidebar">
         <form action="/" id="filter-form">
-
+          <div id="filters">
           <ul class="catalog__filter">
             <li class="input-btn">
               <input class="input-btn__input visually-hidden input-btn__input--checkbox" name="food-type" value="icecream" type="checkbox" id="filter-icecream" >
@@ -77,6 +77,7 @@
               <span class="input-btn__item-count" id="gluten-free-count">(3)</span>
             </li>
           </ul>
+          </div>
 
           <section class="catalog__filter range">
             <h3 class="visually-hidden">Слайдер</h3>
@@ -496,12 +497,13 @@
   </template>
 
   <template id="empty-filters">
-    <div class="catalog__empty-filter visually-hidden">
+    <div class="catalog__empty-filter">
       <p><b>Хм... Что-то ты перемудрил с фильтрами.</b></p>
       <p>Попробуй ещё раз, нажав <span class="catalog__show-all">«Показать всё»</span> или посмотри что мы предлагаем тебе попробовать.</p>
     </div>
   </template>
 <script src="js/utils.js"></script>
+<script src="js/debounce.js"></script>
 <script src="js/backend.js"></script>
 <script src="js/slider.js"></script>
 <script src="js/filter.js"></script>
@@ -509,5 +511,6 @@
 <script src="js/basket.js"></script>
 <script src="js/order.js"></script>
 <script src="js/catalog.js"></script>
+
 </body>
 </html>

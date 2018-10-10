@@ -22,27 +22,29 @@
     endPos: rangeSliderHandler.offsetWidth - toggleCenter,
     minPin: 0,
     maxPin: 90
+
+    // minPin: findMinAndMaxPrice(window.catalog.goods) || 0,
+    // maxPin: findMinAndMaxPrice(window.catalog.goods, true) || 99
   };
 
+  /*  // поиск мин и макс значения цены из всего каталога
+   var findMinAndMaxPrice = function (goods, isMax) {
+    var prices = goods.map(function (good) {
+      return good.price;
+    }).sort(function (first, second) {
+      return first - second;
+    });
+
+    return isMax ? prices.pop() : prices.shift();
+  }; */
+
+  // устанавливает начальные значения ползунков
   var settingInitPrices = function () {
     Price[LEFT].textContent = slider.minPin;
     Price[RIGHT].textContent = slider.maxPin;
   };
   settingInitPrices();
 
-  // findMinAndMaxPrice(window.catalog.goods),
-  // findMinAndMaxPrice(window.catalog.goods, true)
-
-  // // поиск мин и макс значения цены из всего каталога
-  // var findMinAndMaxPrice = function (goods, isMax) {
-  //   var prices = goods.map(function (good) {
-  //     return good.price;
-  //   }).sort(function (first, second) {
-  //     return first - second;
-  //   });
-
-  //   return isMax ? prices.pop() : prices.shift();
-  // };
   rangeSliderHandler.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
     var startXCoords = evt.clientX;
@@ -69,7 +71,8 @@
         var currentPos = Math.round(newCoord / slider.endPos * slider.maxPin);
       }
 
-      var calcCurrentMinMaxPos = function () {
+      // вычисляет текущие значения позиций тогглов
+      function calcCurrentMinMaxPos() {
         var currentMinPos = slider.minPin;
         var currentMaxPos = slider.maxPin;
         switch (evt.target) {
@@ -81,26 +84,51 @@
             return [currentMinPos, currentMaxPos];
         }
         return false;
+      }
+
+      window.slider = {
+        calcCurrentMinMaxPos: calcCurrentMinMaxPos
       };
-
-      var filterByRangePrice = function (cards) {
-        return cards.filter(function (card) {
-          return card.price >= calcCurrentMinMaxPos()[0] && card.price <= calcCurrentMinMaxPos()[1];
-        });
-      };
-
-      window.slider.filterByRangePrice = filterByRangePrice;
-    };
-
-    var isMouseUp = false;
-
-    window.slider = {
-      isMouseUp: isMouseUp
     };
 
     var onMouseUp = function (upEvt) {
       upEvt.preventDefault();
-      window.slider.isMouseUp = true;
+
+      // обновляет значения кол-ва товара по фене
+      var updatePriceCounter = function (cards) {
+        var priceCounter = document.querySelector('.range__count');
+        priceCounter.textContent = '(' + cards.length + ')';
+      };
+
+      // обновляет каталог товаров в зависимости от выбранных фильтров
+      window.debounce(updateCatalog());
+
+      function updateCatalog() {
+
+        // применяет выбранный массив
+        var applyPriceFilters = function (cards) {
+          cards = window.filter.filterByPrice(window.slider.calcCurrentMinMaxPos()[0], window.slider.calcCurrentMinMaxPos()[1]);
+          window.catalog.addCardElems(cards);
+          window.catalog.displayEmptyFilterStub(cards);
+          updatePriceCounter(cards);
+        };
+
+        // выбирает какой массив карточек взять для фильтрации по цене
+        var checkWhichArrayToChoose = function () {
+          var filtersBlock = document.querySelector('#filters');
+
+          var isChecked = Array.from(filtersBlock.querySelectorAll('input')).some(function (input) {
+            return input.checked;
+          });
+
+          if (isChecked) {
+            applyPriceFilters(window.filter.filteredCards);
+          } else {
+            applyPriceFilters(window.filter.runtimeCards);
+          }
+        };
+        checkWhichArrayToChoose();
+      }
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
