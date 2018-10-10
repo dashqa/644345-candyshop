@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var formElem = document.querySelector('#order-form');
+
   var MapImage = {
     PATH: 'img/map/',
     EXTENSION: '.jpg'
@@ -19,12 +21,22 @@
     tehinstitute: 'м.Технологический институт'
   };
 
-  var formElem = document.querySelector('#order-form');
+  var setupSubmition = function () {
+    // включает/отключает возможность отправки заказа
+    var disableOrEnableSubmitBtn = function () {
+      var submitBtnElem = formElem.querySelector('.buy__submit-btn');
+      submitBtnElem.disabled = !submitBtnElem.disabled;
+    };
 
-  window.order.showOrHideOrderInputs = function () {
-    Array.from(formElem.querySelectorAll('input')).forEach(function (input) {
-      input.disabled = !input.disabled;
-    });
+    // включает/отключает интупы в заказе
+    var showOrHideOrderInputs = function () {
+      Array.from(formElem.querySelectorAll('input')).forEach(function (input) {
+        input.disabled = !input.disabled;
+      });
+    };
+
+    disableOrEnableSubmitBtn();
+    showOrHideOrderInputs();
   };
 
   // смена способа доставки
@@ -139,8 +151,14 @@
   var cleanBasket = function () {
     var basketGoodsWrapper = document.querySelector('.goods__cards');
     basketGoodsWrapper.innerHTML = '';
-    window.basket.basketGoods = [];
-    window.basket.emptyStub();
+    window.basket.displayEmptyStub();
+
+    // обнуляем свойство кол-ва у товаров, которые купили.
+    window.filter.runtimeCards.forEach(function (good) {
+      good.orderedAmount = 0;
+    });
+
+    window.basket.goods = [];
   };
 
   // отправка формы заказа
@@ -157,7 +175,7 @@
       window.backend.displayModal(true);
       cleanAllInputs();
       cleanBasket();
-      window.order.showOrHideOrderInputs();
+      setupSubmition();
     };
 
     // обработчик отправки формы
@@ -172,4 +190,8 @@
   changePaymentMethod();
   toPassInputsValidation();
   submitForm();
+
+  window.order = {
+    setupSubmition: setupSubmition
+  };
 })();

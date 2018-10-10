@@ -17,7 +17,7 @@
     cardElem.querySelector('.card__weight').textContent = '/ ' + good.weight + ' Г';
     cardElem.querySelector('.card__btn').addEventListener('click', function (evt) {
       evt.preventDefault();
-      window.basket.addGoodInBasket(good, window.basket.renderBasket); // обработчик кнопки добавить в корзину, добавляет новый товар и перерендеривает страницу
+      window.basket.addGoodInBasket(good, window.basket.render); // обработчик кнопки добавить в корзину, добавляет новый товар и перерендеривает страницу
     });
     if (good.favorite) {
       cardElem.querySelector('.card__btn-favorite').classList.add('card__btn-favorite--selected');
@@ -101,7 +101,7 @@
     window.slider.initSLider();
     window.filter.updateCatalog();
 
-    window.order.showOrHideOrderInputs();
+    window.order.setupSubmition();
   };
 
   window.backend.load(onSuccessLoad, window.error.onErrorUpload);
