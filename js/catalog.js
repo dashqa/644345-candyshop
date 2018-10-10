@@ -99,7 +99,8 @@
 
     window.catalog.goods = goodsArray;
     window.slider.initSLider();
-    window.debounce(window.filter.updateCatalog());
+    window.filter.updateCatalog();
+
     window.order.showOrHideOrderInputs();
   };
 

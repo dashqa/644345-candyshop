@@ -239,7 +239,7 @@
       runtimeCards = filteredCards;
 
       sortBy(runtimeCards, sortType);
-      runtimeCards = window.filter.filterByPrice(window.slider.calcCurrentMinMaxPos()[0], window.slider.calcCurrentMinMaxPos()[1]);
+      runtimeCards = window.filter.filterByPrice(window.slider.initialMinPin, window.slider.initialMaxPin);
       window.catalog.addCardElems(runtimeCards);
       window.catalog.displayEmptyFilterStub(filteredCards);
       window.filter.filteredCards = filteredCards;

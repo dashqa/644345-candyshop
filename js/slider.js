@@ -17,26 +17,23 @@
     Price[LEFT] = document.querySelector('.range__price--min');
     Price[RIGHT] = document.querySelector('.range__price--max');
 
+    // поиск мин и макс значения цены из всего каталога
+    var findMinAndMaxPrice = function (goods, isMax) {
+      var prices = goods.map(function (good) {
+        return good.price;
+      }).sort(function (first, second) {
+        return first - second;
+      });
+
+      return isMax ? prices.pop() : prices.shift();
+    };
+
     var slider = {
       startPos: 0,
       endPos: rangeSliderHandler.offsetWidth - toggleCenter,
-      minPin: 0,
-      maxPin: 90
-
-      // minPin: findMinAndMaxPrice(window.catalog.goods),
-      // maxPin: findMinAndMaxPrice(window.catalog.goods, true)
+      minPin: findMinAndMaxPrice(window.catalog.goods),
+      maxPin: findMinAndMaxPrice(window.catalog.goods, true)
     };
-
-    // // поиск мин и макс значения цены из всего каталога
-    // var findMinAndMaxPrice = function (goods, isMax) {
-    //   var prices = goods.map(function (good) {
-    //     return good.price;
-    //   }).sort(function (first, second) {
-    //     return first - second;
-    //   });
-
-    //   return isMax ? prices.pop() : prices.shift();
-    // };
 
     // устанавливает начальные значения ползунков
     var settingInitPrices = function () {
@@ -85,9 +82,7 @@
           }
           return false;
         };
-        window.slider = {
-          calcCurrentMinMaxPos: calcCurrentMinMaxPos
-        };
+        window.slider.calcCurrentMinMaxPos = calcCurrentMinMaxPos;
       };
 
 
@@ -101,13 +96,13 @@
         };
 
         // обновляет каталог товаров в зависимости от выбранных фильтров
-        window.debounce(updateCatalog());
-
-        function updateCatalog() {
+        var updateCatalog = function () {
+          window.slider.initialMinPin = window.slider.calcCurrentMinMaxPos()[0];
+          window.slider.initialMaxPin = window.slider.calcCurrentMinMaxPos()[1];
 
           // применяет выбранный массив
           var applyPriceFilters = function (cards) {
-            cards = window.filter.filterByPrice(window.slider.calcCurrentMinMaxPos()[0], window.slider.calcCurrentMinMaxPos()[1]);
+            cards = window.filter.filterByPrice(window.slider.initialMinPin, window.slider.initialMaxPin);
             window.catalog.addCardElems(cards);
             window.catalog.displayEmptyFilterStub(cards);
             updatePriceCounter(cards);
@@ -128,7 +123,8 @@
             }
           };
           checkWhichArrayToChoose();
-        }
+        };
+        updateCatalog();
 
         document.removeEventListener('mousemove', onMouseMove);
         document.removeEventListener('mouseup', onMouseUp);
@@ -137,6 +133,9 @@
       document.addEventListener('mousemove', onMouseMove);
       document.addEventListener('mouseup', onMouseUp);
     });
+
+    window.slider.initialMinPin = slider.minPin;
+    window.slider.initialMaxPin = slider.maxPin;
   };
 
   window.slider = {
