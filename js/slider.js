@@ -100,29 +100,36 @@
           window.slider.initialMinPin = window.slider.calcCurrentMinMaxPos()[0];
           window.slider.initialMaxPin = window.slider.calcCurrentMinMaxPos()[1];
 
-          // применяет выбранный массив
-          var applyPriceFilters = function (cards) {
-            cards = window.filter.filterByPrice(window.slider.initialMinPin, window.slider.initialMaxPin);
-            window.catalog.addCardElems(cards);
-            window.catalog.displayEmptyFilterStub(cards);
-            updatePriceCounter(cards);
-          };
+          window.filter.runtimeCards = window.filter.filterByPrice(window.slider.initialMinPin, window.slider.initialMaxPin);
+          window.catalog.addCardElems(window.filter.runtimeCards);
+          window.catalog.displayEmptyFilterStub(window.filter.runtimeCards);
+          updatePriceCounter(window.filter.runtimeCards);
 
-          // выбирает какой массив карточек взять для фильтрации по цене
-          var checkWhichArrayToChoose = function () {
-            var filtersBlock = document.querySelector('#filters');
+          window.filter.runtimeCards = window.filter.filteredCards;
 
-            var isChecked = Array.from(filtersBlock.querySelectorAll('input')).some(function (input) {
-              return input.checked;
-            });
+          // // применяет выбранный массив
+          // var applyPriceFilters = function (cards) {
+          //   cards = window.filter.filterByPrice(window.slider.initialMinPin, window.slider.initialMaxPin);
+          //   window.catalog.addCardElems(cards);
+          //   window.catalog.displayEmptyFilterStub(cards);
+          //   updatePriceCounter(cards);
+          // };
 
-            if (isChecked) {
-              applyPriceFilters(window.filter.filteredCards);
-            } else {
-              applyPriceFilters(window.filter.runtimeCards);
-            }
-          };
-          checkWhichArrayToChoose();
+          // // выбирает какой массив карточек взять для фильтрации по цене
+          // var checkWhichArrayToChoose = function () {
+          //   var filtersBlock = document.querySelector('#filters');
+
+          //   var isChecked = Array.from(filtersBlock.querySelectorAll('input')).some(function (input) {
+          //     return input.checked;
+          //   });
+
+          //   if (isChecked) {
+          //     applyPriceFilters(window.filter.filteredCards);
+          //   } else {
+          //     applyPriceFilters(window.filter.runtimeCards);
+          //   }
+          // };
+          // checkWhichArrayToChoose();
         };
         updateCatalog();
 

@@ -209,7 +209,6 @@
     };
 
     window.filter.filterByPrice = filterByPrice;
-    window.filter.runtimeCards = runtimeCards;
 
     // обработчик изменений инпутов внутри блока с фильтрами
     var catalogSidebarElem = document.querySelector('.catalog__sidebar');
@@ -241,7 +240,8 @@
       sortBy(runtimeCards, sortType);
       runtimeCards = window.filter.filterByPrice(window.slider.initialMinPin, window.slider.initialMaxPin);
       window.catalog.addCardElems(runtimeCards);
-      window.catalog.displayEmptyFilterStub(filteredCards);
+      window.catalog.displayEmptyFilterStub(runtimeCards);
+
       window.filter.filteredCards = filteredCards;
     });
   };
