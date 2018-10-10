@@ -1298,16 +1298,16 @@ body {
   z-index: 5;
 }
 .range__btn--left {
-  left: 15%;
+  left: 0;
 }
 .range__btn--right {
-  right: 15%;
+  right: 0;
 }
 .range__fill-line {
   position: absolute;
   background-color: #6e58d9;
-  left: 15%;
-  right: 15%;
+  left: 0;
+  right: 0;
   top: 3px;
   height: 4px;
 }

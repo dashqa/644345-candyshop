@@ -109,15 +109,20 @@
     });
 
     // отображение заглушки, если в корзине нет товаров
+    var displayEmptyStub = function () {
+      goodsWrapperElem.classList.add('goods__cards--empty');
+      goodsTotalElem.classList.add('visually-hidden');
+      var emptyOrderStub = emptyCardOrderElemTemplate.cloneNode(true);
+      goodsWrapperElem.appendChild(emptyOrderStub);
+    };
+
+    // условия отображения заглушки
     var displayEmptyOrderStub = function () {
       if (good.orderedAmount < 1) {
         removeFromBasketArray(good.name);
         orderElem.remove();
         if (basketGoods.length === 0) {
-          goodsWrapperElem.classList.add('goods__cards--empty');
-          goodsTotalElem.classList.add('visually-hidden');
-          var emptyOrderStub = emptyCardOrderElemTemplate.cloneNode(true);
-          goodsWrapperElem.appendChild(emptyOrderStub);
+          displayEmptyStub();
         }
       }
     };
@@ -132,6 +137,8 @@
       }
     });
 
+    window.basket.displayEmptyStub = displayEmptyStub;
+
     return orderElem;
   };
 
@@ -144,6 +151,7 @@
 
     renderTotalOrderElem();
     goodsWrapperElem.innerHTML = '';
+    window.order.setupSubmition();
 
     var cardOrderFragment = document.createDocumentFragment();
 
@@ -172,13 +180,17 @@
     };
 
     var totalWithDecline = calcTotal().totalAmount + ' ' + window.utils.declOfNum(calcTotal().totalAmount, ['товар', 'товара', 'товаров']);
-    goodsTotalElem.querySelector('.goods__total-count').textContent = 'Итого за ' + totalWithDecline + ': ' + calcTotal().totalPrice + ' ₽';
+    goodsTotalElem.querySelector('.goods__total-count').childNodes[0].textContent = 'Итого за ' + totalWithDecline + ': ';
+    goodsTotalElem.querySelector('.goods__price').textContent = calcTotal().totalPrice + ' ₽';
     basketElemInHeader.textContent = 'В корзине ' + totalWithDecline;
   };
 
   window.basket = {
-    basketGoods: basketGoods,
+    goodsWrapperElem: goodsWrapperElem,
+    goods: basketGoods,
     addGoodInBasket: addGoodInBasket,
-    renderBasket: renderBasket,
+    render: renderBasket,
+    renderTotalOrderElem: renderTotalOrderElem,
+    changeGoodOrderAmount: changeGoodOrderAmount
   };
 })();

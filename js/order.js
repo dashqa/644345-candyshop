@@ -1,13 +1,43 @@
 'use strict';
 
 (function () {
+  var formElem = document.querySelector('#order-form');
 
-  /* var hideAllFieldsets = function () {
-    if (window.basket.basketGoods < 1) {
-      var formElem = document.querySelector('#order-form');
-      disableFieldset(formElem);
-    }
-  }; */
+  var MapImage = {
+    PATH: 'img/map/',
+    EXTENSION: '.jpg'
+  };
+
+  var storeNameToAdress = {
+    academicheskaya: 'проспект Науки, д. 19, корп. 3, литер А, ТК «Платформа», 3-й этаж, секция 310',
+    vasileostrovskaya: 'м. Василеостровская',
+    rechka: 'м.Черная речка',
+    petrogradskaya: 'м.Петроградская',
+    proletarskaya: 'м.Пролетарская',
+    vostaniya: 'м.Площадь Восстания',
+    prosvesheniya: 'м.Проспект Просвещения',
+    frunzenskaya: 'м.Фрунзенская',
+    chernishevskaya: 'м.Чернышевская',
+    tehinstitute: 'м.Технологический институт'
+  };
+
+  var setupSubmition = function () {
+    // включает/отключает возможность отправки заказа
+    var disableOrEnableSubmitBtn = function () {
+      var submitBtnElem = formElem.querySelector('.buy__submit-btn');
+      submitBtnElem.disabled = !submitBtnElem.disabled;
+    };
+
+    // включает/отключает интупы в заказе
+    var showOrHideOrderInputs = function () {
+      Array.from(formElem.querySelectorAll('input')).forEach(function (input) {
+        input.disabled = !input.disabled;
+      });
+    };
+
+    disableOrEnableSubmitBtn();
+    showOrHideOrderInputs();
+  };
 
   // смена способа доставки
   var changeDeliveryMethod = function () {
@@ -50,6 +80,22 @@
       disableFieldset(methodsObj[method1]);
       disableFieldset(methodsObj[method2]);
     }
+  };
+
+  // смена картинки карты при выборе станции метро
+  var changeMapImage = function () {
+    var deliverStoreListElem = document.querySelector('.deliver__store-list');
+    var mapImageElem = document.querySelector('.deliver__store-map-img');
+    var storeAdressElem = document.querySelector('.deliver__store-describe');
+
+    deliverStoreListElem.addEventListener('change', function (evt) {
+      if (evt.target.name === 'store') {
+        var picture = MapImage.PATH + evt.target.value + MapImage.EXTENSION;
+        mapImageElem.src = picture;
+        mapImageElem.alt = evt.target.value;
+        storeAdressElem.textContent = storeNameToAdress[evt.target.value];
+      }
+    });
   };
 
   // отключает/включает fieldset внутри конкретного враппера
@@ -102,10 +148,21 @@
     };
   };
 
+  var cleanBasket = function () {
+    var basketGoodsWrapper = document.querySelector('.goods__cards');
+    basketGoodsWrapper.innerHTML = '';
+    window.basket.displayEmptyStub();
+
+    // обнуляем свойство кол-ва у товаров, которые купили.
+    window.filter.runtimeCards.forEach(function (good) {
+      good.orderedAmount = 0;
+    });
+
+    window.basket.goods = [];
+  };
+
   // отправка формы заказа
   var submitForm = function () {
-    var formElem = document.querySelector('#order-form');
-
     // очистка всех полей
     var cleanAllInputs = function () {
       var dirtyInputs = formElem.querySelectorAll('input');
@@ -117,6 +174,8 @@
     var onSuccessUpload = function () {
       window.backend.displayModal(true);
       cleanAllInputs();
+      cleanBasket();
+      setupSubmition();
     };
 
     // обработчик отправки формы
@@ -126,9 +185,13 @@
     });
   };
 
-  // hideAllFieldsets();
   changeDeliveryMethod();
+  changeMapImage();
   changePaymentMethod();
   toPassInputsValidation();
   submitForm();
+
+  window.order = {
+    setupSubmition: setupSubmition
+  };
 })();
