@@ -92,8 +92,17 @@
     writeCounters(foodProperty);
   };
 
+  // изменяет кол-во товаров, отфильтрованные по цене
+  var updatePriceCounter = function (cards) {
+    var priceCounter = document.querySelector('.range__count');
+    priceCounter.textContent = '(' + cards.length + ')';
+  };
+
   // обновляет каталог товаров в зависимости от выбранные фильтров
   var updateCatalog = function () {
+
+    // вспомогательный глобальный массив в модуле, заполняется тогда, когда идет фильтрация
+    var runtimeCards = window.catalog.goods.slice();
 
     // сброс чекнутых инпутов
     var setDefaultParams = function () {
@@ -183,7 +192,7 @@
       });
     };
 
-    // возвращает массив объектов, у которых выбран чекбаттон
+    // возвращает массив объектов, у которых выбран чекбокс
     var getCheckedValues = function (children) {
       return Array.from(children).reduce(function (accum, cur) {
         if (cur.checked) {
@@ -193,14 +202,6 @@
       }, []);
     };
 
-    // возвращает массив отсортированных карточек по категории и составу
-    var defaultFilter = function (cards) {
-      var result = filterByKind(cards, getCheckedValues(document.querySelectorAll('input[name="food-type"]')));
-      return filterByNutritionFacts(result, getCheckedValues(document.querySelectorAll('input[name="food-property"]')));
-    };
-
-    var runtimeCards = window.catalog.goods.slice();
-
     // возвращает массив объектов, отсортированные по цене
     var filterByPrice = function (min, max) {
       return runtimeCards.filter(function (card) {
@@ -208,7 +209,11 @@
       });
     };
 
-    window.filter.filterByPrice = filterByPrice;
+    // возвращает массив отсортированных карточек по категории и составу
+    var defaultFilter = function (cards) {
+      var result = filterByKind(cards, getCheckedValues(document.querySelectorAll('input[name="food-type"]')));
+      return filterByNutritionFacts(result, getCheckedValues(document.querySelectorAll('input[name="food-property"]')));
+    };
 
     // обработчик изменений инпутов внутри блока с фильтрами
     var catalogSidebarElem = document.querySelector('.catalog__sidebar');
@@ -235,15 +240,20 @@
           break;
       }
 
+      // передаем все отлифльтрованные карточки в вспомогательный массив
       runtimeCards = filteredCards;
 
-      sortBy(runtimeCards, sortType);
-      runtimeCards = window.filter.filterByPrice(window.slider.initialMinPin, window.slider.initialMaxPin);
-      window.catalog.addCardElems(runtimeCards);
-      window.catalog.displayEmptyFilterStub(runtimeCards);
+      sortBy(filteredCards, sortType);
+      filteredCards = filterByPrice(window.slider.initialMinPin, window.slider.initialMaxPin);
+      updatePriceCounter(filteredCards);
 
-      window.filter.filteredCards = filteredCards;
+      window.catalog.addCardElems(filteredCards);
+      window.catalog.displayEmptyFilterStub(filteredCards);
     });
+
+    window.filter.updatePriceCounter = updatePriceCounter;
+    window.filter.filterByPrice = filterByPrice;
+    window.filter.runtimeCards = runtimeCards;
   };
 
   // обработчик "показать всё" в фильтрах
