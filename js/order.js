@@ -155,7 +155,6 @@
     });
   };
 
-
   // отправка формы заказа
   var submitForm = function () {
     var onSuccessUpload = function () {
