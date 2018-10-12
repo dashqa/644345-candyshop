@@ -17,6 +17,11 @@
     Price[LEFT] = document.querySelector('.range__price--min');
     Price[RIGHT] = document.querySelector('.range__price--max');
 
+    var price = {
+      min: Price[LEFT].textContent,
+      max: Price[RIGHT].textContent
+    };
+
 
     // поиск мин и макс значения цены из всего каталога
     var findMinAndMaxPrice = function (goods, isMax) {
@@ -36,12 +41,8 @@
       maxPin: findMinAndMaxPrice(window.catalog.goods, true)
     };
 
-    // устанавливает начальные значения ползунков
-    var settingInitPrices = function () {
-      Price[LEFT].textContent = slider.minPin;
-      Price[RIGHT].textContent = slider.maxPin;
-    };
-    settingInitPrices();
+    Price[LEFT].textContent = slider.minPin;
+    Price[RIGHT].textContent = slider.maxPin;
 
     rangeSliderHandler.addEventListener('mousedown', function (evt) {
       evt.preventDefault();
@@ -69,16 +70,14 @@
           Price[side].textContent = Math.round(newCoord / slider.endPos * slider.maxPin);
         }
 
-        window.slider.price = {
-          min: Price[LEFT].textContent,
-          max: Price[RIGHT].textContent
-        };
+        price.min = Price[LEFT].textContent;
+        price.max = Price[RIGHT].textContent;
       };
 
       var onMouseUp = function (upEvt) {
         upEvt.preventDefault();
 
-        window.filter.render(window.slider.price.min, window.slider.price.max);
+        window.filter.render(price.min, price.max);
 
         document.removeEventListener('mousemove', onMouseMove);
         document.removeEventListener('mouseup', onMouseUp);
@@ -87,9 +86,11 @@
       document.addEventListener('mousemove', onMouseMove);
       document.addEventListener('mouseup', onMouseUp);
     });
+
+    window.slider.price = price;
   };
 
   window.slider = {
-    initSLider: initSLider
+    initSLider: initSLider,
   };
 })();
