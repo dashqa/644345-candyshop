@@ -160,7 +160,6 @@
   var submitForm = function () {
     var onSuccessUpload = function () {
       window.backend.displayModal(true);
-      window.basket.goods = [];
       window.basket.clean();
       cleanAllInputs();
       setupSubmition();

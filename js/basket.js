@@ -61,10 +61,11 @@
     basketGoods.splice((basketGoods.indexOf(basketGood)), 1);
   };
 
-  // очистка карточек
+  // очистка карточек и массива корзины
   var cleanBasket = function () {
     goodsWrapperElem.innerHTML = '';
     displayEmptyStub();
+    basketGoods = [];
   };
 
   // отображение заглушки, если в корзине нет товаров
