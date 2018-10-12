@@ -16,6 +16,7 @@
     updateMarkCounters(cards);
     updatePropertyCounters(cards);
     updateTypeCounters(cards);
+    updatePriceCounter(cards);
   };
 
   // записывает кол-во товара в элемент счетчика

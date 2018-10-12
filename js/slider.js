@@ -22,7 +22,6 @@
       max: Price[RIGHT].textContent
     };
 
-
     // поиск мин и макс значения цены из всего каталога
     var findMinAndMaxPrice = function (goods, isMax) {
       var prices = goods.map(function (good) {
