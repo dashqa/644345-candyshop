@@ -17,11 +17,6 @@
     Price[LEFT] = document.querySelector('.range__price--min');
     Price[RIGHT] = document.querySelector('.range__price--max');
 
-    var price = {
-      min: Price[LEFT].textContent,
-      max: Price[RIGHT].textContent
-    };
-
     // поиск мин и макс значения цены из всего каталога
     var findMinAndMaxPrice = function (goods, isMax) {
       var prices = goods.map(function (good) {
@@ -42,6 +37,11 @@
 
     Price[LEFT].textContent = slider.minPin;
     Price[RIGHT].textContent = slider.maxPin;
+
+    var price = {
+      min: Price[LEFT].textContent,
+      max: Price[RIGHT].textContent
+    };
 
     rangeSliderHandler.addEventListener('mousedown', function (evt) {
       evt.preventDefault();

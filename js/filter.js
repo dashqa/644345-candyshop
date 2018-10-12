@@ -262,8 +262,9 @@
     filterFormElem.addEventListener('submit', function (evt) {
       evt.preventDefault();
       filterFormElem.reset();
-      filteredCards = window.catalog.goods;
-      window.catalog.addCardElems(filteredCards);
+      runtimeCards = window.catalog.goods.slice();
+      setupInitialCounters(runtimeCards);
+      window.catalog.addCardElems(runtimeCards);
     });
 
     window.filter.render = renderFilteredCards;

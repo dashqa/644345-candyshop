@@ -22,21 +22,20 @@
   };
 
   var setupSubmition = function () {
-    // включает/отключает возможность отправки заказа
-    var disableOrEnableSubmitBtn = function () {
-      var submitBtnElem = formElem.querySelector('.buy__submit-btn');
-      submitBtnElem.disabled = !submitBtnElem.disabled;
-    };
+    var submitBtnElem = formElem.querySelector('.buy__submit-btn');
+    var submitInputs = Array.from(formElem.querySelectorAll('input'));
 
-    // включает/отключает интупы в заказе
-    var showOrHideOrderInputs = function () {
-      Array.from(formElem.querySelectorAll('input')).forEach(function (input) {
-        input.disabled = !input.disabled;
+    if (window.basket.goods < 1) {
+      submitBtnElem.disabled = true;
+      submitInputs.forEach(function (input) {
+        input.disabled = true;
       });
-    };
-
-    disableOrEnableSubmitBtn();
-    showOrHideOrderInputs();
+    } else {
+      submitBtnElem.disabled = false;
+      submitInputs.forEach(function (input) {
+        input.disabled = false;
+      });
+    }
   };
 
   // смена способа доставки
@@ -148,27 +147,22 @@
     };
   };
 
-  var cleanBasket = function () {
-    var basketGoodsWrapper = document.querySelector('.goods__cards');
-    basketGoodsWrapper.innerHTML = '';
-    window.basket.displayEmptyStub();
-    window.basket.goods = [];
+  // очистка всех полей
+  var cleanAllInputs = function () {
+    var dirtyInputs = formElem.querySelectorAll('input');
+    dirtyInputs.forEach(function (input) {
+      input.value = '';
+    });
   };
+
 
   // отправка формы заказа
   var submitForm = function () {
-    // очистка всех полей
-    var cleanAllInputs = function () {
-      var dirtyInputs = formElem.querySelectorAll('input');
-      dirtyInputs.forEach(function (input) {
-        input.value = '';
-      });
-    };
-
     var onSuccessUpload = function () {
       window.backend.displayModal(true);
+      window.basket.goods = [];
+      window.basket.clean();
       cleanAllInputs();
-      cleanBasket();
       setupSubmition();
     };
 
