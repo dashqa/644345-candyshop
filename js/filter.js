@@ -103,6 +103,7 @@
 
     // вспомогательный глобальный массив в модуле, заполняется тогда, когда идет фильтрация
     var runtimeCards = window.catalog.goods.slice();
+    var filteredCards = runtimeCards;
 
     // сброс чекнутых инпутов
     var setDefaultParams = function () {
@@ -204,7 +205,7 @@
 
     // возвращает массив объектов, отсортированные по цене
     var filterByPrice = function (min, max) {
-      return runtimeCards.filter(function (card) {
+      return filteredCards.filter(function (card) {
         return card.price >= min && card.price <= max;
       });
     };
@@ -215,10 +216,18 @@
       return filterByNutritionFacts(result, getCheckedValues(document.querySelectorAll('input[name="food-property"]')));
     };
 
+    // функция рендеринга отфильтрованных карточек
+    var renderFilteredCards = function (min, max) {
+      runtimeCards = filterByPrice(min, max);
+      window.catalog.addCardElems(runtimeCards);
+      window.catalog.displayEmptyFilterStub(runtimeCards);
+      updatePriceCounter(runtimeCards);
+    };
+
     // обработчик изменений инпутов внутри блока с фильтрами
     var catalogSidebarElem = document.querySelector('.catalog__sidebar');
     catalogSidebarElem.addEventListener('change', function (evt) {
-      var filteredCards = window.catalog.goods.slice();
+      filteredCards = window.catalog.goods.slice();
       var name = evt.target.name;
       switch (name) {
         case 'sort':
@@ -243,27 +252,21 @@
       // передаем все отлифльтрованные карточки в вспомогательный массив
       runtimeCards = filteredCards;
 
-      sortBy(filteredCards, sortType);
-      filteredCards = filterByPrice(window.slider.initialMinPin, window.slider.initialMaxPin);
-      updatePriceCounter(filteredCards);
-
-      window.catalog.addCardElems(filteredCards);
-      window.catalog.displayEmptyFilterStub(filteredCards);
+      sortBy(runtimeCards, sortType);
+      renderFilteredCards(window.slider.price.min, window.slider.price.max);
     });
 
-    window.filter.updatePriceCounter = updatePriceCounter;
-    window.filter.filterByPrice = filterByPrice;
-    window.filter.runtimeCards = runtimeCards;
-  };
+    // обработчик "показать всё" в фильтрах
+    var filterFormElem = document.querySelector('#filter-form');
+    filterFormElem.addEventListener('submit', function (evt) {
+      evt.preventDefault();
+      filterFormElem.reset();
+      filteredCards = window.catalog.goods;
+      window.catalog.addCardElems(filteredCards);
+    });
 
-  // обработчик "показать всё" в фильтрах
-  var filterFormElem = document.querySelector('#filter-form');
-  filterFormElem.addEventListener('submit', function (evt) {
-    evt.preventDefault();
-    filterFormElem.reset();
-    window.filter.filteredCards = window.catalog.goods;
-    window.catalog.addCardElems(window.filter.filteredCards);
-  });
+    window.filter.render = renderFilteredCards;
+  };
 
   window.filter = {
     updateCatalog: updateCatalog,

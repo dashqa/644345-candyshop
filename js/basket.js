@@ -81,7 +81,7 @@
       // отображение заглушки, если в наличии не осталось товара
       var displayOutOfStockElem = function (currentAmout) {
         var outOfStockElem = evt.currentTarget.querySelector('.card-order__outofstock');
-        if (currentAmout === 0) {
+        if (currentAmout < 1) {
           outOfStockElem.classList.add('card-order__outofstock--active');
         } else {
           outOfStockElem.classList.remove('card-order__outofstock--active');
@@ -105,6 +105,9 @@
         changeGoodOrderAmount(good.name, false);
         displayEmptyOrderStub();
         onChangeAmountButtonClick();
+        if (basketGoods.length < 1) {
+          window.order.setupSubmition();
+        }
       }
     });
 
@@ -121,7 +124,7 @@
       if (good.orderedAmount < 1) {
         removeFromBasketArray(good.name);
         orderElem.remove();
-        if (basketGoods.length === 0) {
+        if (basketGoods.length < 1) {
           displayEmptyStub();
         }
       }
@@ -134,6 +137,7 @@
         good.orderedAmount = 0;
         renderTotalOrderElem();
         displayEmptyOrderStub();
+        window.order.setupSubmition();
       }
     });
 

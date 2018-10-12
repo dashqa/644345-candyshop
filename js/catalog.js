@@ -71,7 +71,7 @@
     var emptyFilterStubElemTemplate = document.querySelector('#empty-filters').content.querySelector('.catalog__empty-filter');
     var emptyFilterStubElem = emptyFilterStubElemTemplate.cloneNode(true);
 
-    if (cards.length === 0) {
+    if (cards.length < 1) {
       catalogCardsElem.appendChild(emptyFilterStubElem);
     } else if (catalogCardsElem.contains(emptyFilterStubElem)) {
       catalogCardsElem.removeChild(emptyFilterStubElem);

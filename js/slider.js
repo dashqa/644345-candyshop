@@ -17,6 +17,7 @@
     Price[LEFT] = document.querySelector('.range__price--min');
     Price[RIGHT] = document.querySelector('.range__price--max');
 
+
     // поиск мин и макс значения цены из всего каталога
     var findMinAndMaxPrice = function (goods, isMax) {
       var prices = goods.map(function (good) {
@@ -61,46 +62,23 @@
 
       var moveToggler = function (side, min, max, shift) {
         var newCoord = Toggler[side].offsetLeft - shift;
+
         if (newCoord >= min && newCoord <= max) {
           Toggler[side].style.left = newCoord + 'px';
           fillLine.style[side] = Math.abs(newCoord - (side === RIGHT ? slider.endPos : 0)) + 'px';
           Price[side].textContent = Math.round(newCoord / slider.endPos * slider.maxPin);
-          var currentPos = Math.round(newCoord / slider.endPos * slider.maxPin);
         }
 
-        // вычисляет текущие значения позиций тогглов
-        var calcCurrentMinMaxPos = function () {
-          var currentMinPos = slider.minPin;
-          var currentMaxPos = slider.maxPin;
-          switch (evt.target) {
-            case Toggler[LEFT]:
-              currentMinPos = currentPos;
-              return [currentMinPos, currentMaxPos];
-            case Toggler[RIGHT]:
-              currentMaxPos = currentPos;
-              return [currentMinPos, currentMaxPos];
-          }
-          return false;
+        window.slider.price = {
+          min: Price[LEFT].textContent,
+          max: Price[RIGHT].textContent
         };
-        window.slider.calcCurrentMinMaxPos = calcCurrentMinMaxPos;
       };
-
 
       var onMouseUp = function (upEvt) {
         upEvt.preventDefault();
 
-        // обновляет каталог товаров в зависимости от выбранных фильтров
-        var updateCatalog = function () {
-          window.slider.initialMinPin = window.slider.calcCurrentMinMaxPos()[0];
-          window.slider.initialMaxPin = window.slider.calcCurrentMinMaxPos()[1];
-
-          window.filter.runtimeCards = window.filter.filterByPrice(window.slider.initialMinPin, window.slider.initialMaxPin);
-          window.catalog.addCardElems(window.filter.runtimeCards);
-          window.catalog.displayEmptyFilterStub(window.filter.runtimeCards);
-          window.filter.updatePriceCounter(window.filter.runtimeCards);
-        };
-
-        updateCatalog();
+        window.filter.render(window.slider.price.min, window.slider.price.max);
 
         document.removeEventListener('mousemove', onMouseMove);
         document.removeEventListener('mouseup', onMouseUp);
@@ -109,9 +87,6 @@
       document.addEventListener('mousemove', onMouseMove);
       document.addEventListener('mouseup', onMouseUp);
     });
-
-    window.slider.initialMinPin = slider.minPin;
-    window.slider.initialMaxPin = slider.maxPin;
   };
 
   window.slider = {
