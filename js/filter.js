@@ -64,21 +64,7 @@
       'marshmallow': 0,
     };
     cards.forEach(function (card) {
-      if (card.kind === 'Мороженое') {
-        foodType['icecream'] += 1;
-      }
-      if (card.kind === 'Газировка') {
-        foodType['soda'] += 1;
-      }
-      if (card.kind === 'Жевательная резинка') {
-        foodType['gum'] += 1;
-      }
-      if (card.kind === 'Мармелад') {
-        foodType['marmalade'] += 1;
-      }
-      if (card.kind === 'Зефир') {
-        foodType['marshmallow'] += 1;
-      }
+      foodType[GoodKind[card.kind]] += 1;
     });
     writeCounters(foodType);
   };
