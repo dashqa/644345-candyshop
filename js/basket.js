@@ -96,13 +96,9 @@
     cardOrderAmountElem.addEventListener('click', function (evt) {
 
       // отображение заглушки, если в наличии не осталось товара
-      var displayOutOfStockElem = function (currentAmout) {
+      var displayOutOfStockElem = function (currentAmount) {
         var outOfStockElem = evt.currentTarget.querySelector('.card-order__outofstock');
-        if (currentAmout < 1) {
-          outOfStockElem.classList.add('card-order__outofstock--active');
-        } else {
-          outOfStockElem.classList.remove('card-order__outofstock--active');
-        }
+        outOfStockElem.classList[currentAmount < 1 ? 'add' : 'remove']('card-order__outofstock--active');
       };
 
       // событие при нажатии на увеличение/уменьшение кол-ва товара
