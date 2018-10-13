@@ -1,6 +1,11 @@
 'use strict';
 
 (function () {
+  var STORE = 'deliver__store';
+  var COURIER = 'deliver__courier';
+  var CARD = 'payment__card';
+  var CASH = 'payment__cash';
+
   var formElem = document.querySelector('#order-form');
 
   var MapImage = {
@@ -42,15 +47,12 @@
   var changeDeliveryMethod = function () {
     var toggleBtnElem = document.querySelector('.deliver__toggle');
 
-    var STORE = 'deliver__store';
-    var COURIER = 'deliver__courier';
-
-    var Delivery = {};
-    Delivery[STORE] = document.querySelector('.' + STORE);
-    Delivery[COURIER] = document.querySelector('.' + COURIER);
+    var delivery = {};
+    delivery[STORE] = document.querySelector('.' + STORE);
+    delivery[COURIER] = document.querySelector('.' + COURIER);
 
     toggleBtnElem.addEventListener('change', function (evt) {
-      onToggleBtnElemChange(evt.target, STORE, COURIER, Delivery);
+      onToggleBtnElemChange(evt.target, STORE, COURIER, delivery);
     });
   };
 
@@ -58,15 +60,12 @@
   var changePaymentMethod = function () {
     var toggleBtnElem = document.querySelector('.payment__method');
 
-    var CARD = 'payment__card';
-    var CASH = 'payment__cash';
-
-    var Payment = {};
-    Payment[CARD] = document.querySelector('.' + CARD + '-wrap');
-    Payment[CASH] = document.querySelector('.' + CASH + '-wrap');
+    var payment = {};
+    payment[CARD] = document.querySelector('.' + CARD + '-wrap');
+    payment[CASH] = document.querySelector('.' + CASH + '-wrap');
 
     toggleBtnElem.addEventListener('change', function (evt) {
-      onToggleBtnElemChange(evt.target, CARD, CASH, Payment);
+      onToggleBtnElemChange(evt.target, CARD, CASH, payment);
     });
   };
 
@@ -177,7 +176,5 @@
   toPassInputsValidation();
   submitForm();
 
-  window.order = {
-    setupSubmition: setupSubmition
-  };
+  window.order.setupSubmition = setupSubmition;
 })();

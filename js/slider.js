@@ -9,13 +9,13 @@
     var toggle = rangeSliderHandler.querySelector('.range__btn');
     var toggleWidth = toggle.offsetWidth;
 
-    var Toggler = {};
-    Toggler[LEFT] = rangeSliderHandler.querySelector('.range__btn--left');
-    Toggler[RIGHT] = rangeSliderHandler.querySelector('.range__btn--right');
+    var toggler = {};
+    toggler[LEFT] = rangeSliderHandler.querySelector('.range__btn--left');
+    toggler[RIGHT] = rangeSliderHandler.querySelector('.range__btn--right');
 
-    var Price = {};
-    Price[LEFT] = document.querySelector('.range__price--min');
-    Price[RIGHT] = document.querySelector('.range__price--max');
+    var price = {};
+    price[LEFT] = document.querySelector('.range__price--min');
+    price[RIGHT] = document.querySelector('.range__price--max');
 
     // поиск мин и макс значения цены из всего каталога
     var findMinAndMaxPrice = function (goods, isMax) {
@@ -35,12 +35,12 @@
       maxPin: findMinAndMaxPrice(window.catalog.goods, true)
     };
 
-    Price[LEFT].textContent = slider.minPin;
-    Price[RIGHT].textContent = slider.maxPin;
+    price[LEFT].textContent = slider.minPin;
+    price[RIGHT].textContent = slider.maxPin;
 
-    var price = {
-      min: Price[LEFT].textContent,
-      max: Price[RIGHT].textContent
+    var currentPrice = {
+      min: price[LEFT].textContent,
+      max: price[RIGHT].textContent
     };
 
     rangeSliderHandler.addEventListener('mousedown', function (evt) {
@@ -52,31 +52,31 @@
         startXCoords = moveEvt.clientX;
 
         switch (evt.target) {
-          case Toggler[LEFT]:
-            return moveToggler(LEFT, slider.startPos, Toggler[RIGHT].offsetLeft, shift);
-          case Toggler[RIGHT]:
-            return moveToggler(RIGHT, Toggler[LEFT].offsetLeft, slider.endPos, shift);
+          case toggler[LEFT]:
+            return moveToggler(LEFT, slider.startPos, toggler[RIGHT].offsetLeft, shift);
+          case toggler[RIGHT]:
+            return moveToggler(RIGHT, toggler[LEFT].offsetLeft, slider.endPos, shift);
         }
         return false;
       };
 
       var moveToggler = function (side, min, max, shift) {
-        var newCoord = Toggler[side].offsetLeft - shift;
+        var newCoord = toggler[side].offsetLeft - shift;
 
         if (newCoord >= min && newCoord <= max) {
-          Toggler[side].style.left = newCoord + 'px';
+          toggler[side].style.left = newCoord + 'px';
           fillLine.style[side] = Math.abs(newCoord - (side === RIGHT ? slider.endPos : 0)) + 'px';
-          Price[side].textContent = Math.round(newCoord / slider.endPos * slider.maxPin);
+          price[side].textContent = Math.round(newCoord / slider.endPos * slider.maxPin);
         }
 
-        price.min = Price[LEFT].textContent;
-        price.max = Price[RIGHT].textContent;
+        currentPrice.min = price[LEFT].textContent;
+        currentPrice.max = price[RIGHT].textContent;
       };
 
       var onMouseUp = function (upEvt) {
         upEvt.preventDefault();
 
-        window.filter.render(price.min, price.max);
+        window.filter.render(currentPrice.min, currentPrice.max);
 
         document.removeEventListener('mousemove', onMouseMove);
         document.removeEventListener('mouseup', onMouseUp);
@@ -86,7 +86,7 @@
       document.addEventListener('mouseup', onMouseUp);
     });
 
-    window.slider.price = price;
+    window.slider.currentPrice = currentPrice;
   };
 
   window.slider = {

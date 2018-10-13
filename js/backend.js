@@ -15,13 +15,13 @@
 
   // отображает модальное окно
   var displayModal = function (isSuccess) {
-    var ModalElem = (isSuccess) ? Modal.SUCCESS : Modal.ERROR;
-    var modalCloseElem = ModalElem.querySelector('.modal__close');
+    var modalElem = (isSuccess) ? Modal.SUCCESS : Modal.ERROR;
+    var modalCloseElem = modalElem.querySelector('.modal__close');
 
-    ModalElem.classList.remove('modal--hidden');
+    modalElem.classList.remove('modal--hidden');
 
     modalCloseElem.addEventListener('click', function () {
-      ModalElem.classList.add('modal--hidden');
+      modalElem.classList.add('modal--hidden');
     });
   };
 

@@ -19,7 +19,7 @@
 
       // обработчик кнопки добавить в корзину, добавляет новый товар и перерендеривает страницу
       evt.preventDefault();
-      window.basket.addGoodInBasket(good, window.basket.render);
+      window.basket.addGood(good, window.basket.render);
     });
 
     if (good.favorite) {

@@ -11,6 +11,11 @@
     'Зефир': 'marshmallow'
   };
 
+  var foodTypeInputs = document.querySelectorAll('input[name="food-type"]');
+  var foodPropertyInputs = document.querySelectorAll('input[name="food-property"]');
+  var availabilityInput = document.querySelector('input[value="availability"]');
+  var favoriteInput = document.querySelector('input[value="favorite"]');
+
   // утсанавливает изначальные значения кол-ва товара у фильтров
   var setupInitialCounters = function (cards) {
     updateMarkCounters(cards);
@@ -23,6 +28,12 @@
   var writeCounters = function (inputs) {
     Object.keys(inputs).forEach(function (key) {
       document.querySelector('#' + key + '-count').textContent = '(' + inputs[key] + ')';
+    });
+  };
+
+  var getCheckedInputs = function (inputs) {
+    return Array.from(inputs).filter(function (input) {
+      return input.checked;
     });
   };
 
@@ -108,7 +119,10 @@
 
     // сброс чекнутых инпутов
     var setDefaultParams = function () {
-      Array.from(document.querySelectorAll('input[name="food-type"], input[name="food-property"]')).forEach(function (elem) {
+      var checkedFoodTypeInputs = getCheckedInputs(foodTypeInputs);
+      var checkedFoodPropertyInputs = getCheckedInputs(foodPropertyInputs);
+
+      checkedFoodTypeInputs.concat(checkedFoodPropertyInputs).forEach(function (elem) {
         elem.checked = false;
       });
     };
@@ -150,10 +164,10 @@
       return window.catalog.goods.filter(function (good) {
         switch (mark) {
           case 'favorite':
-            document.querySelector('input[value="availability"]').checked = false;
+            availabilityInput.checked = false;
             return good.favorite;
           case 'availability':
-            document.querySelector('input[value="favorite"]').checked = false;
+            favoriteInput.checked = false;
             return good.amount > 0;
           default:
             return false;
@@ -213,8 +227,8 @@
 
     // возвращает массив отсортированных карточек по категории и составу
     var defaultFilter = function (cards) {
-      var result = filterByKind(cards, getCheckedValues(document.querySelectorAll('input[name="food-type"]')));
-      return filterByNutritionFacts(result, getCheckedValues(document.querySelectorAll('input[name="food-property"]')));
+      var result = filterByKind(cards, getCheckedValues(foodTypeInputs));
+      return filterByNutritionFacts(result, getCheckedValues(foodPropertyInputs));
     };
 
     // функция рендеринга отфильтрованных карточек
@@ -254,7 +268,7 @@
       runtimeCards = filteredCards;
 
       sortBy(runtimeCards, sortType);
-      renderFilteredCards(window.slider.price.min, window.slider.price.max);
+      renderFilteredCards(window.slider.currentPrice.min, window.slider.currentPrice.max);
     });
 
     // обработчик "показать всё" в фильтрах

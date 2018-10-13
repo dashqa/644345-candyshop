@@ -65,7 +65,9 @@
   var cleanBasket = function () {
     goodsWrapperElem.innerHTML = '';
     displayEmptyStub();
-    basketGoods = [];
+    while (basketGoods.length) {
+      basketGoods.pop();
+    }
   };
 
   // отображение заглушки, если в корзине нет товаров
@@ -195,7 +197,7 @@
   window.basket = {
     goods: basketGoods,
     goodsWrapperElem: goodsWrapperElem,
-    addGoodInBasket: addGoodInBasket,
+    addGood: addGoodInBasket,
     render: renderBasket,
     clean: cleanBasket,
     renderTotalOrderElem: renderTotalOrderElem,
